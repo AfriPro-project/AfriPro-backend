@@ -1,0 +1,71 @@
+@font-face {
+    font-family: Avenir;
+    src: url(fonts/AvenirLTStd-Roman.otf);
+}
+
+body{
+    background-color: #171717;
+    color:white !important;
+    font-family: Avenir !important;
+}
+
+.container{
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+}
+.image{
+    align-items: center;
+}
+.image img{
+    width: 10em;
+    margin: auto;
+}
+
+.message-box{
+    width: 100%;
+    max-width: 500px;
+}
+
+.message{
+    text-align: center;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 27px;
+}
+.pass-form {
+    max-width: 350px;
+    margin:auto;
+    width: 100%;
+    margin-top: 100px;
+}
+
+.pass-form input{
+  width: 100% !important;
+  border-radius: 7.5px;
+  height: 60px;
+  background-color: #232323;
+  border: none;
+  padding: 10px;
+  color: white !important;
+  font-family: Avenir !important;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.pass-form input:focus{
+    outline: 5px solid #126A37;
+}
+.btn{
+    background-color: #126A37;
+    border: none;
+    outline: none;
+    width: 100%;
+    border-radius: 7.5px;
+    height: 60px;
+    color: white;
+    font-family: Avenir !important;
+    font-size: 20px;
+    cursor: pointer;
+}
