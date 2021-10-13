@@ -19,8 +19,22 @@ class AuthController extends Controller
             'password'=>'required|string|confirmed',
             'phone_number'=>'required|string',
             'phone_number_prefix'=>'required|string',
-            'user_type'=>'required|string'
+            'user_type'=>'required|string',
+            'user_type'=>'required|string',
+            'referred_by'=>'required|string'
         ]);
+
+        //check if user was referred by someone
+        $userFound = User::where('referral_code',$fields['referred_by'])->first();
+        if(!$userFound){
+            $fields['referred_by'] = '';
+        }
+
+        $users = User::where('first_name','!=','')->get();
+        $number = sizeof($users) > 0 ? $users[sizeof(($users))-1]['id'] : 0;
+        //generate referral code
+        $referralCode = substr($fields['first_name'],0,3).''.$number.''.substr($fields['phone_number'],strlen($fields['phone_number'])-3,strlen($fields['phone_number']));
+        $referralCode = strtoupper($referralCode);
 
         $user = User::create([
             'first_name' => $fields['first_name'],
@@ -29,7 +43,10 @@ class AuthController extends Controller
             'password'=> md5($fields['password']),
             'phone_number'=>$fields['phone_number'],
             'phone_number_prefix'=>$fields['phone_number_prefix'],
-            'user_type'=>$fields['user_type']
+            'user_type'=>$fields['user_type'],
+            'blocked'=>'false',
+            'referral_code'=>$referralCode,
+            'referred_by'=>$fields['referred_by']
         ]);
 
         $token = $user->createToken('userToken')->plainTextToken;
@@ -44,7 +61,7 @@ class AuthController extends Controller
 
         $verificationToken = new VerificationTokensController();
         $verificationToken->store($fields,$token);
-        $this->sendVerificationEmail($fields,$token);
+        // $this->sendVerificationEmail($fields,$token);
         return response($response, 200);
     }
 
@@ -59,27 +76,24 @@ class AuthController extends Controller
         $user = User::where('email',$loginData['email'])->where('password',$password)->first();
         if($user){
             $token = $user->createToken('userToken')->plainTextToken;
-            if($user->email_verified_at != null){
-                $response = [
-                    'status'=>'success',
-                    'user'=>$user,
-                    'token'=>$token
-                ];
-                return response($response, 200);
-            }else{
+            if($user->blocked == 'true'){
                 $response = [
                     'status'=>'error',
-                    'message'=>'verify email'
+                    'message'=>'Sorry!, your account has been suspended, please contact our support team for assistance.'
                 ];
-                $verificationToken = new VerificationTokensController();
-                $verificationToken->store($user,$token);
-                $this->sendVerificationEmail($user,$token);
                 return response($response, 200);
             }
+            $response = [
+                'status'=>'success',
+                'user'=>$user,
+                'token'=>$token
+            ];
+            return response($response, 200);
+
         }else{
             $response = [
                 'status'=>'error',
-                'message'=>'user not found'
+                'message'=>'Sorry!, you provided the wrong email and password. Please try again.'
             ];
             return response($response, 200);
         }
@@ -118,13 +132,13 @@ class AuthController extends Controller
                 $mailer->send();
                 $response = [
                     'status'=>'sucess',
-                    'message'=>'reset password  mail sent'
+                    'message'=>'We just sent you a reset password link to your email'
                 ];
                 return response($response, 200);
         }else{
             $response = [
                 'status'=>'error',
-                'message'=>'user not found'
+                'message'=>'Oops!, we couldn\'t find your email address'
             ];
             return response($response, 200);
         }
