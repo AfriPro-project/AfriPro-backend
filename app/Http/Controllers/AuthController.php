@@ -17,11 +17,11 @@ class AuthController extends Controller
             'last_name'=> 'required|string',
             'email'=>'required|string|unique:users,email',
             'password'=>'required|string|confirmed',
-            'phone_number'=>'required|string',
-            'phone_number_prefix'=>'required|string',
+            'phone_number'=>'string',
+            'phone_number_prefix'=>'string',
             'user_type'=>'required|string',
             'user_type'=>'required|string',
-            'referred_by'=>'required|string'
+            'referred_by'=>'string'
         ]);
 
         //check if user was referred by someone
@@ -61,7 +61,8 @@ class AuthController extends Controller
 
         $verificationToken = new VerificationTokensController();
         $verificationToken->store($fields,$token);
-        // $this->sendVerificationEmail($fields,$token);
+        $this->sendVerificationEmail($fields,$token);
+        $this->sendWelcomeEmail($fields);
         return response($response, 200);
     }
 
@@ -223,8 +224,34 @@ class AuthController extends Controller
             'name'=>$fields['first_name'],
             'title' => 'Verify Email',
             'body' => '<p> Hello <b>'.$fields['first_name'].'</b>,</p>
-            <h3>Welcome to AfriPro.</h3>
             <p>Please Click here to verify your email <a href="'.$link.'">'.$link.'</a></p>',
+        );
+
+        $mailer = new Email(
+            $template,
+            $email_data,
+            'Verify your email',
+            'noreply@afri.pro'
+        );
+        $mailer->send();
+    }
+
+
+    public function sendWelcomeEmail($fields){
+
+        // send email with the template
+        $template = 'emails.email_template';
+        // email data
+
+        $email_data = array(
+            'email' => $fields['email'],
+            'name'=>$fields['first_name'],
+            'title' => 'Welcome to AfriPro',
+            'body' => '
+            Hello baller,<br/>
+            Welcome to AfriPro, " The Gateway to Stardom ".<br/>
+            We at AfriPro delighted to have you join us and we hope to do our best to take you to the next level. Remember to follow our Instagram account @afripro.afripro .<br/>
+            Thank you ⚽️🤝'
         );
 
         $mailer = new Email(
