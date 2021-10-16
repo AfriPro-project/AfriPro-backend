@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\PlayerBioController;
 
 /*
@@ -28,5 +28,6 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/save_player_bio',[PlayerBioController::class,'store']);
     Route::post('/update_player_bio',[PlayerBioController::class,'update']);
     Route::post('/get_player_bio',[PlayerBioController::class,'show']);
+    Route::post('/upload_file',[FileUploadController::class,'store']);
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);
 });

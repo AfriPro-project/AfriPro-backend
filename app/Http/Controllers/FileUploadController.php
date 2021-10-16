@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\PlayerBio;
+use App\Models\Files;
 
-class PlayerBioController extends Controller
+class FileUploadController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,16 +27,32 @@ class PlayerBioController extends Controller
     {
 
 
-        //upload playerCV if found
 
-        //upload playerTranscript if found
+        $fields = $request->validate([
+            'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpeg,gif,jpg',
+        ]);
 
-        //upload playerImage if found
 
+        if ($file = $request->file('file')) {
 
-        //create user bio
-        $playerBio = PlayerBio::create($request->all());
-        return response($playerBio);
+            $path = $file->store('public/files');
+            $name = $file->getClientOriginalName();
+
+            Files::create([
+                'path'=> $path,
+                'name'=>$name,
+            ]);
+
+            return response()->json([
+                "success" => true,
+                "message" => "File successfully uploaded",
+                "file" => [
+                    'path'=> $path,
+                    'name'=>$name
+                ]
+            ]);
+
+        }
     }
 
     /**
@@ -45,10 +61,9 @@ class PlayerBioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show($id)
     {
-        $playerBio = PlayerBio::where('player_id',$request['player_id'])->first();
-        return response($playerBio, 200);
+        //
     }
 
     /**
@@ -58,11 +73,9 @@ class PlayerBioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $playerBio = PlayerBio::where('player_id',$request['player_id'])->first();
-        $playerBio->update($request->all());
-        return response($playerBio, 200);
+        //
     }
 
     /**
