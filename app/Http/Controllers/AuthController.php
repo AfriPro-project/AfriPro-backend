@@ -15,11 +15,10 @@ class AuthController extends Controller
         $fields = $request->validate([
             'first_name' => 'required|string',
             'last_name'=> 'required|string',
-            'email'=>'required|string|unique:users,email',
+            'email'=>'required|string|unique:users',
             'password'=>'required|string|confirmed',
             'phone_number'=>'string',
             'phone_number_prefix'=>'string',
-            'user_type'=>'required|string',
             'user_type'=>'required|string',
             'referred_by'=>'string'
         ]);
