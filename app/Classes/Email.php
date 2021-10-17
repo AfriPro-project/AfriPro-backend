@@ -19,10 +19,14 @@ class Email{
     $email_data = $this->email_data;
     $subject = $this->subject;
     $from = $this->from;
-    Mail::send($this->template, $this->email_data, function ($message) use ($email_data, $subject, $from) {
-        $message->to($email_data['email'], $email_data['name'])
-            ->subject($subject)
-            ->from($from, 'AfriPro');
-    });
+    try{
+        Mail::send($this->template, $this->email_data, function ($message) use ($email_data, $subject, $from) {
+            $message->to($email_data['email'], $email_data['name'])
+                ->subject($subject)
+                ->from($from, 'AfriPro');
+        });
+    }catch (\Exception $e) {
+
+    }
   }
 }
