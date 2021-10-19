@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\VerificationTokensController;
 use App\Classes\Email;
+use App\Models\ReferralCodes;
 use Carbon\Carbon;
 use App\Models\Verification_tokens;
 
@@ -29,11 +30,8 @@ class AuthController extends Controller
             $fields['referred_by'] = '';
         }
 
-        $users = User::where('first_name','!=','')->get();
-        $number = sizeof($users) > 0 ? $users[sizeof(($users))-1]['id'] : 0;
-        //generate referral code
-        $referralCode = substr($fields['first_name'],0,3).''.$number.''.substr($fields['phone_number'],strlen($fields['phone_number'])-3,strlen($fields['phone_number']));
-        $referralCode = strtoupper($referralCode);
+        $referralCodeInstance = new ReferralCodesController();
+        $referralCode = $referralCodeInstance->store($fields);
 
         $user = User::create([
             'first_name' => $fields['first_name'],
@@ -48,6 +46,8 @@ class AuthController extends Controller
             'referred_by'=>$fields['referred_by']
         ]);
 
+        $referralCodeInstance->update($user->id,$referralCode);
+
         $token = $user->createToken('userToken')->plainTextToken;
 
 
@@ -60,8 +60,8 @@ class AuthController extends Controller
 
         $verificationToken = new VerificationTokensController();
         $verificationToken->store($fields,$token);
-        $this->sendVerificationEmail($fields,$token);
-        $this->sendWelcomeEmail($fields);
+        // $this->sendVerificationEmail($fields,$token);
+        // $this->sendWelcomeEmail($fields);
         return response($response, 200);
     }
 
