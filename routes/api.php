@@ -5,7 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\PlayerBioController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TeamBioController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ScholarsController;
+use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +46,15 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
      Route::post('/update_team_bio',[TeamBioController::class,'update']);
      Route::post('/get_team_bio',[TeamBioController::class,'show']);
 
-    Route::post('/upload_file',[FileUploadController::class,'store']);
+     //services
+     Route::post('/create_service',[ServicesController::class,'store']);
+     Route::post('/payment_link/create_invoice', [PaymentController::class,'createInvoice']);
+
+
+     Route::post('/get_subscription',[SubscriptionController::class,'show']);
+
+     Route::post('/apply_to_scholarship',[ScholarsController::class,'store']);
+
+     Route::post('/upload_file',[FileUploadController::class,'store']);
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);
 });

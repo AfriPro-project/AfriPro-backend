@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\VerificationTokensController;
 use App\Classes\Email;
-use App\Models\ReferralCodes;
 use Carbon\Carbon;
 use App\Models\Verification_tokens;
 

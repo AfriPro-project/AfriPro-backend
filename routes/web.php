@@ -1,6 +1,6 @@
 <?php
 
-use App\Classes\Email;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VerificationTokensController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +21,8 @@ Route::get('/', function () {
 
 Route::get('/veiry_email/{email}/{token}',[VerificationTokensController::class, 'verify']);
 Route::get('/forgot_password/{email}/{token}',[AuthController::class, 'forgotPasswordView']);
+Route::get('/verify_transaction',[PaymentController::class, 'verifyTransaction']);
+
 
 // Route::get('/email', function () {
 //      // email data
