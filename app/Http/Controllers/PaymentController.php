@@ -14,14 +14,18 @@ use AmrShawky\LaravelCurrency\Facade\Currency;
 class PaymentController extends Controller
 {
     function createInvoice(Request $request){
-
-
         $servicesControllerInstance = new ServicesController();
         $service = $servicesControllerInstance->show($request->service_id);
         if($service){
             $user = User::where('id','=',$request->user_id)->get()->first();
             if($user){
-                $service_amount = $user->user_type == 'player' ? $service->amount_for_playe : $service->amount_for_agent;
+                $service_amount = $user->user_type == 'player' ? $service->amount_for_player : $service->amount_for_agent;
+
+                //check if agent is onboarding a player instead
+                if($request->player_id){
+                    $user = User::where('id','=',$request->player_id)->get()->first();
+                }
+
                 //Check if user has no active subscription for the selected service
                 $subscription = Subscriptions::where('service_id','=',$request->service_id)->where('user_id','=',$request->user_id)->get()->first();
                     if($subscription){
@@ -97,6 +101,22 @@ class PaymentController extends Controller
 
     }
 
+    function getExpiration($transaction,$user,$expiration){
+        if($transaction->service_id == 2 && $user->user_type == 'player' && $user->password != null){
+            //add premium plan to player
+            $expiration->addMonth(1);
+        }else if($transaction->service_id == 2 && $user->user_type == 'player' && $user->password == null){
+            //add premium plan to onboarded player by agent
+            $expiration->addYear(30);
+        }else if($transaction->service_id == 1 && $user->user_type == 'agent'){
+            //add 1 year agent plan
+            $expiration->addYear(1);
+        }else{
+            $expiration->addYear(30);
+        }
+        return $expiration;
+    }
+
     function verifyTransaction(Request $request){
         $query = [];
         if($request->query()){
@@ -110,37 +130,28 @@ class PaymentController extends Controller
         ])->get("https://api.flutterwave.com/v3/transactions/".$id."/verify");
 
         $data =  $response->json();
+
+        $transaction = Transactions::where('transaction_ref','=',$query['tx_ref'])->where('status','=','pending')->leftJoin('services', 'transactions.service_id', '=', 'services.id')->get()->first();
+
         if($data['data']['status'] == 'successful'){
-            $transaction = Transactions::where('transaction_ref','=',$query['tx_ref'])->where('status','=','pending')->leftJoin('services', 'transactions.service_id', '=', 'services.id')->get()->first();
-
              if($transaction){
-
-
-
                 $subscription = Subscriptions::where('user_id','=',$transaction->user_id)->where('service_id','=',$transaction->service_id)->get()->first();
+
+                $user = User::where('id','=',$transaction->user_id)->get()->first();
 
                 if($subscription){
                     $expiration = Carbon::createFromFormat('Y-m-d',$subscription->expiry);
-                    if($transaction->service_id == 2){
-                        $expiration->addMonth(1);
-                    }else{
-                        $expiration->addYear(30);
-                    }
+                    $expirationFunc = $this->getExpiration($transaction, $user,$expiration);
                     $subscription->update([
-                        'expiry'=>$expiration
+                        'expiry'=>$expirationFunc
                     ]);
                 }else{
                     $expiration = Carbon::now();
-                    if($transaction->service_id == 2){
-                        $expiration->addMonth(1);
-                    }else{
-                        $expiration->addYear(30);
-                    }
-
+                    $expirationFunc = $this->getExpiration($transaction, $user,$expiration);
                     $subscription = Subscriptions::create([
                         'user_id'=>$transaction->user_id,
                         'service_id'=>$transaction->service_id,
-                        'expiry'=>$expiration
+                        'expiry'=>$expirationFunc
                     ]);
                 }
                 $transaction = Transactions::where('transaction_ref','=',$query['tx_ref'])->get()->first();
@@ -148,12 +159,12 @@ class PaymentController extends Controller
                 return redirect('/done');
 
              }else{
-                $response = [
-                    'status'=>'error',
-                    'message'=>'Transaction not found'
-                ];
-                 return response($response,200);
+                return redirect('/done');
              }
+        }else{
+            $transaction = Transactions::where('transaction_ref','=',$query['tx_ref'])->get()->first();
+            $transaction->update(['status'=>'failed']);
+            return redirect('/done');
         }
     }
 }
