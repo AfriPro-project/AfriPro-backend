@@ -10,6 +10,8 @@ use App\Http\Controllers\TeamBioController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\VerificationDocsController;
+use App\Models\VerificationDocs;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +57,11 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
 
      Route::post('/apply_to_scholarship',[ScholarsController::class,'store']);
 
+     Route::post('/save_verification_docs',[VerificationDocsController::class,'store']);
+     Route::post('/update_verification_docs',[VerificationDocsController::class,'update']);
+     Route::post('/get_verification_docs',[VerificationDocsController::class,'show']);
+
      Route::post('/upload_file',[FileUploadController::class,'store']);
+     Route::post('/update_file',[FileUploadController::class,'update']);
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);
 });

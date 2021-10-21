@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\PlayerBio;
+use App\Models\VerificationDocs;
 
-class PlayerBioController extends Controller
+class VerificationDocsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,18 +25,8 @@ class PlayerBioController extends Controller
      */
     public function store(Request $request)
     {
-
-
-        //upload playerCV if found
-
-        //upload playerTranscript if found
-
-        //upload playerImage if found
-
-
-        //create user bio
-        $playerBio = PlayerBio::create($request->all());
-        return response($playerBio);
+        $verificationDocs = VerificationDocs::create($request->all());
+        return response($verificationDocs,200);
     }
 
     /**
@@ -47,8 +37,8 @@ class PlayerBioController extends Controller
      */
     public function show(Request $request)
     {
-        $playerBio = PlayerBio::where('player_id',$request['player_id'])->get()->first();
-        return response($playerBio, 200);
+        $verificationDocs = VerificationDocs::where('user_id','=',$request->user_id)->get()->first();
+        return response($verificationDocs,200);
     }
 
     /**
@@ -60,9 +50,9 @@ class PlayerBioController extends Controller
      */
     public function update(Request $request)
     {
-        $playerBio = PlayerBio::where('player_id',$request['player_id'])->get()->first();
-        $playerBio->update($request->all());
-        return response($playerBio, 200);
+        $verificationDocs = VerificationDocs::where('user_id','=',$request->user_id)->get()->first();
+        $verificationDocs->update($request->all());
+        return response($verificationDocs,200);
     }
 
     /**

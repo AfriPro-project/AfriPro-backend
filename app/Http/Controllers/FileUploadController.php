@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Files;
+use Illuminate\Support\Facades\File;
+
 
 class FileUploadController extends Controller
 {
@@ -73,9 +75,36 @@ class FileUploadController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $fields = $request->validate([
+            'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpeg,gif,jpg',
+        ]);
+
+        if ($file = $request->file('file')) {
+            //remove previous file if  found
+            $path = storage_path('app/'.$request->previousFilePath);
+            if(File::exists($path)){
+                File::delete($path);
+            }
+
+            $path = $file->store('public/files');
+            $name = $file->getClientOriginalName();
+
+            $file = Files::where('path','=',$request->previousFilePath)->get()->first();
+            $file->update([
+                'path'=> $path,
+                'name'=>$name
+            ]);
+            return response()->json([
+                "success" => true,
+                "message" => "File successfully uploaded",
+                "file" => [
+                    'path'=> $path,
+                    'name'=>$name
+                ]
+            ]);
+         }
     }
 
     /**
