@@ -88,14 +88,23 @@ class FileUploadController extends Controller
                 File::delete($path);
             }
 
+
+
             $path = $file->store('public/files');
             $name = $file->getClientOriginalName();
 
             $file = Files::where('path','=',$request->previousFilePath)->get()->first();
-            $file->update([
-                'path'=> $path,
-                'name'=>$name
-            ]);
+            if($file){
+                $file->update([
+                    'path'=> $path,
+                    'name'=>$name
+                ]);
+            }else{
+                $file = Files::create([
+                    'path'=> $path,
+                    'name'=>$name,
+                ]);
+            }
             return response()->json([
                 "success" => true,
                 "message" => "File successfully uploaded",

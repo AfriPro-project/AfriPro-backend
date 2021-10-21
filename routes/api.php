@@ -4,6 +4,7 @@ use App\Http\Controllers\AgentBioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\OpportunitiesController;
 use App\Http\Controllers\PlayerBioController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TeamBioController;
@@ -60,6 +61,11 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
      Route::post('/save_verification_docs',[VerificationDocsController::class,'store']);
      Route::post('/update_verification_docs',[VerificationDocsController::class,'update']);
      Route::post('/get_verification_docs',[VerificationDocsController::class,'show']);
+
+     Route::post('/save_opportunity',[OpportunitiesController::class,'store']);
+     Route::post('/update_opportunity',[OpportunitiesController::class,'update']);
+     Route::post('/delete_opportunity',[OpportunitiesController::class,'destroy']);
+     Route::post('/show_opportunity',[OpportunitiesController::class,'show']);
 
      Route::post('/upload_file',[FileUploadController::class,'store']);
      Route::post('/update_file',[FileUploadController::class,'update']);
