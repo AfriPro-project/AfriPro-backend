@@ -35,6 +35,7 @@ Route::post('/resetpassword',[AuthController::class,'resetpassword']);
 Route::get('/players',[PlayerBioController::class,'showAll']);
 
 
+
 //protected routes
 Route::group(['middleware'=>['auth:sanctum']],function(){
     //player bio
@@ -65,13 +66,12 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
      Route::post('/update_verification_docs',[VerificationDocsController::class,'update']);
      Route::post('/get_verification_docs',[VerificationDocsController::class,'show']);
 
-     Route::get('/opportunities',[OpportunitiesController::class,'showAll']);
      Route::get('/opportunities/{id}/{user_id}',[OpportunitiesController::class,'show']);
      Route::post('/save_opportunity',[OpportunitiesController::class,'store']);
      Route::post('/update_opportunity',[OpportunitiesController::class,'update']);
      Route::post('/delete_opportunity',[OpportunitiesController::class,'destroy']);
      Route::post('/apply_opportunity',[OpportunitiesAppliedByController::class,'store']);
-
+     Route::get('/opportunities',[OpportunitiesController::class,'showAll']);
 
 
      Route::post('/upload_file',[FileUploadController::class,'store']);
