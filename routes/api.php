@@ -32,6 +32,8 @@ Route::post('/login',[AuthController::class,'login']);
 Route::post('/forgotPassword',[AuthController::class,'forgotPassword']);
 Route::post('/resetpassword',[AuthController::class,'resetpassword']);
 
+Route::get('/players',[PlayerBioController::class,'showAll']);
+
 
 //protected routes
 Route::group(['middleware'=>['auth:sanctum']],function(){
