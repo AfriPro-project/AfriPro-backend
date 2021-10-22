@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Opportunities;
+use App\Models\OpportunitiesAppliedBy;
 
 class OpportunitiesController extends Controller
 {
@@ -38,7 +39,30 @@ class OpportunitiesController extends Controller
     public function show(Request $request)
     {
         $opportunity = Opportunities::find($request->id);
+
+        //check if player has applied to this opportunity
+        $applied = OpportunitiesAppliedBy::where('player_id','=',$request->user_id)->where('opportunity_id','=',$request->id)->get()->first();
+        if($applied){
+            $opportunity['applied'] = true;
+
+        }else{
+            $opportunity['applied'] = false;
+        }
         return $opportunity;
+    }
+
+     /**
+     * Display the specified resource.
+     * @return \Illuminate\Http\Response
+     */
+    public function showAll(Request $request)
+    {
+         if($request->user_type == "club_official"){
+            $opportunities = Opportunities::where('user_id','=',$request->user_id)->orderBy('id', 'desc')->paginate(3);
+         }else{
+            $opportunities = Opportunities::where('status','=','open')->orderBy('id', 'desc')->paginate(3);
+        }
+        return $opportunities;
     }
 
     /**

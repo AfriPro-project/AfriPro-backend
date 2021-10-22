@@ -4,6 +4,7 @@ use App\Http\Controllers\AgentBioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\OpportunitiesAppliedByController;
 use App\Http\Controllers\OpportunitiesController;
 use App\Http\Controllers\PlayerBioController;
 use App\Http\Controllers\ServicesController;
@@ -12,7 +13,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
-use App\Models\VerificationDocs;
+use App\Models\OpportunitiesAppliedBy;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,10 +63,14 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
      Route::post('/update_verification_docs',[VerificationDocsController::class,'update']);
      Route::post('/get_verification_docs',[VerificationDocsController::class,'show']);
 
+     Route::get('/opportunities',[OpportunitiesController::class,'showAll']);
+     Route::get('/opportunities/{id}/{user_id}',[OpportunitiesController::class,'show']);
      Route::post('/save_opportunity',[OpportunitiesController::class,'store']);
      Route::post('/update_opportunity',[OpportunitiesController::class,'update']);
      Route::post('/delete_opportunity',[OpportunitiesController::class,'destroy']);
-     Route::post('/show_opportunity',[OpportunitiesController::class,'show']);
+     Route::post('/apply_opportunity',[OpportunitiesAppliedByController::class,'store']);
+
+
 
      Route::post('/upload_file',[FileUploadController::class,'store']);
      Route::post('/update_file',[FileUploadController::class,'update']);
