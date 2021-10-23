@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PlayerBio;
 use App\Models\Subscriptions;
-
+use App\Models\ProfileViews;
+use Illuminate\Support\Facades\DB;
 class PlayerBioController extends Controller
 {
     /**
@@ -42,8 +43,32 @@ class PlayerBioController extends Controller
      */
     public function show(Request $request)
     {
-        $playerBio = PlayerBio::where('player_id',$request->player_id)->get()->first();
-        return response($playerBio, 200);
+        $playerBio = PlayerBio::select('users.*','player_bios.*', 'verification_docs.*', DB::raw('count(profile_views.player_id) As views'))
+        ->leftJoin('users','player_bios.player_id','users.id')
+        ->leftJoin('verification_docs','player_bios.player_id','verification_docs.user_id')
+        ->leftJoin('profile_views','player_bios.player_id','profile_views.player_id')
+        ->where('player_bios.player_id',$request->player_id)
+        ->get()->first();
+
+        if($playerBio->player_id != $request->user_id){
+            //check if use has already viewed profile
+            $profileView = ProfileViews::where('user_id','=',$request->user_id)->where('player_id','=',$request->player_id)->get()->first();
+            if($profileView == null){
+                ProfileViews::create([
+                    'player_id'=>$request->player_id,
+                    'user_id'=>$request->user_id
+                ]);
+            }
+        }
+        if($playerBio->views >= 1000 && $playerBio->views < 1000000){
+            $playerBio->views = $playerBio->views / 1000;
+            $playerBio->views .= 'K';
+        }else if($playerBio->views >= 1000000){
+            $playerBio->views = $playerBio->views / 1000000;
+            $playerBio->views .= 'M';
+        }
+        return $playerBio;
+        //return response($playerBio, 200);
     }
 
      /**
@@ -75,6 +100,8 @@ class PlayerBioController extends Controller
             ->orderBy('subscriptions.id', 'desc')
             ->paginate(5);
          }else{
+             $operator = $request->height > 0 ? '=' : '>';
+             $request->height = $request->height > 0 ? $request->height : 0;
             $players = Subscriptions::where('subscriptions.service_id','!=',0)
             ->where('player_bios.primary_position','!=',null)
             ->where('player_bios.current_country','like',"%".filterValues($request->current_country)."%")
@@ -82,7 +109,7 @@ class PlayerBioController extends Controller
             ->where('player_bios.primary_position','like',"%".filterValues($request->primary_position)."%")
             ->where('player_bios.secondary_position','like',"%".filterValues($request->secondary_position)."%")
             ->where('player_bios.citizenship','like',"%".filterValues($request->citizenship)."%")
-            ->where('player_bios.height_cm','=',filterValues($request->height))
+            ->where('player_bios.height_cm',$operator,filterValues($request->height))
             ->where('player_bios.date_of_birth','!=',null)
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
             ->join('users','users.id','=','subscriptions.user_id')

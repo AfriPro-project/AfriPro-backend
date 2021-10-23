@@ -31,8 +31,9 @@ Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 Route::post('/forgotPassword',[AuthController::class,'forgotPassword']);
 Route::post('/resetpassword',[AuthController::class,'resetpassword']);
+Route::get('/players/{player_id}/{user_id}',[PlayerBioController::class,'show']);
 
-Route::get('/players',[PlayerBioController::class,'showAll']);
+
 
 
 
@@ -41,7 +42,8 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     //player bio
     Route::post('/save_player_bio',[PlayerBioController::class,'store']);
     Route::post('/update_player_bio',[PlayerBioController::class,'update']);
-    Route::post('/get_player_bio',[PlayerBioController::class,'show']);
+    Route::get('/players',[PlayerBioController::class,'showAll']);
+
 
     //agent bio
     Route::post('/save_agent_bio',[AgentBioController::class,'store']);
@@ -72,6 +74,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
      Route::post('/delete_opportunity',[OpportunitiesController::class,'destroy']);
      Route::post('/apply_opportunity',[OpportunitiesAppliedByController::class,'store']);
      Route::get('/opportunities',[OpportunitiesController::class,'showAll']);
+
 
 
      Route::post('/upload_file',[FileUploadController::class,'store']);
