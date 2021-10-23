@@ -29,6 +29,9 @@ class PlayerBio extends Model
         "cv_document",
         "school_transcript_document",
         "skill_set",
-        "pictures"
+        "pictures",
+        "agent_name",
+        "agent_contact",
+        "agent_contact_prefix"
     ];
 }
