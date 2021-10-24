@@ -26,7 +26,7 @@ class Email{
                 ->from($from, 'AfriPro');
         });
     }catch (\Exception $e) {
-
+        throw $e;
     }
   }
 }
