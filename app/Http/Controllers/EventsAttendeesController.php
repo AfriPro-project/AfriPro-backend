@@ -39,7 +39,7 @@ class EventsAttendeesController extends Controller
             From <b>'.date('M d, Y H:i A',strtotime($event->start_date_time)).'</b> to <b>'.date('M d, Y H:i A',strtotime($event->end_date_time)).'</b><br/>
             ';
             if($event->online_link != ''){
-                $body .= 'Via: <b>'.$event->online_link.'</b>';
+                $body .= 'Via: <b><a href="'.$event->online_link.'">'.$event->online_link.'</a></b>';
             }
             $body .= $event->about_event;
 
