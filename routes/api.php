@@ -3,6 +3,8 @@
 use App\Http\Controllers\AgentBioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EventsAttendeesController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\OpportunitiesAppliedByController;
 use App\Http\Controllers\OpportunitiesController;
@@ -13,7 +15,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
-use App\Models\OpportunitiesAppliedBy;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +33,10 @@ Route::post('/login',[AuthController::class,'login']);
 Route::post('/forgotPassword',[AuthController::class,'forgotPassword']);
 Route::post('/resetpassword',[AuthController::class,'resetpassword']);
 Route::get('/players/{player_id}/{user_id}',[PlayerBioController::class,'show']);
-
-
-
+Route::post('/events',[EventsController::class,'store']);
+Route::get('/events',[EventsController::class,'showAll']);
+Route::get('/events/{id}',[EventsController::class,'show']);
+Route::post('/attend_event',[EventsAttendeesController::class,'store']);
 
 
 //protected routes
