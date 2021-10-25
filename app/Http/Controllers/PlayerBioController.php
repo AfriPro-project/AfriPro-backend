@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PlayerBio;
 use App\Models\Subscriptions;
 use App\Models\ProfileViews;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 class PlayerBioController extends Controller
 {
@@ -28,8 +29,8 @@ class PlayerBioController extends Controller
     public function store(Request $request)
     {
         //create user bio
-        if($request->pictures == ""){
-            $request->pictures = "public/files/default_avatar.jpg";
+        if($request->pictures == null){
+            $request['pictures'] = "public/files/default_avatar.jpg";
         }
         $playerBio = PlayerBio::create($request->all());
         return response($playerBio);
@@ -50,7 +51,8 @@ class PlayerBioController extends Controller
         ->where('player_bios.player_id',$request->player_id)
         ->get()->first();
 
-        if($playerBio->player_id != $request->user_id){
+        $user = auth()->user();
+        if($playerBio->player_id != $request->user_id && $user->id != $playerBio->agent){
             //check if use has already viewed profile
             $profileView = ProfileViews::where('user_id','=',$request->user_id)->where('player_id','=',$request->player_id)->get()->first();
             if($profileView == null){
@@ -88,19 +90,32 @@ class PlayerBioController extends Controller
             }
          }
 
+         if($request->height == ""){
+             $request->height = 0;
+         }
+         $operator = $request->height > 0 ? '=' : '>';
+
          if($request->type == "verified"){
             $players = Subscriptions::where('subscriptions.service_id','=',2)
             ->where("verification_docs.status",'=',"verified")
             ->where('player_bios.primary_position','!=',null)
             ->where('player_bios.date_of_birth','!=',null)
+            ->where('users.blocked','=','false')
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
             ->join('users','users.id','=','subscriptions.user_id')
             ->join("verification_docs","player_bios.player_id","verification_docs.user_id")
             ->select("users.first_name","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","verification_docs.status","player_bios.date_of_birth")
             ->orderBy('subscriptions.id', 'desc')
             ->paginate(5);
+         }else if($request->type=="agent"){
+            $user = auth()->user();
+            $players = User::where('users.agent','=',$user->id)
+            ->leftJoin('player_bios','users.id','=','player_bios.player_id')
+            ->leftJoin("verification_docs","player_bios.player_id","verification_docs.user_id")
+            ->select("users.first_name","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","verification_docs.status","player_bios.date_of_birth","users.blocked")
+            ->orderBy('users.created_at','desc')
+            ->paginate(6);
          }else{
-             $operator = $request->height > 0 ? '=' : '>';
              $request->height = $request->height > 0 ? $request->height : 0;
             $players = Subscriptions::where('subscriptions.service_id','!=',0)
             ->where('player_bios.primary_position','!=',null)
@@ -111,6 +126,7 @@ class PlayerBioController extends Controller
             ->where('player_bios.citizenship','like',"%".filterValues($request->citizenship)."%")
             ->where('player_bios.height_cm',$operator,filterValues($request->height))
             ->where('player_bios.date_of_birth','!=',null)
+            ->where('users.blocked','=','false')
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
             ->join('users','users.id','=','subscriptions.user_id')
             ->leftJoin("verification_docs","player_bios.player_id","verification_docs.user_id")
@@ -120,6 +136,19 @@ class PlayerBioController extends Controller
         }
         return $players;
 
+    }
+
+    function toggleBlocked(Request $request){
+         $user = User::find($request->user_id);
+         $subscription = Subscriptions::where('user_id','=',$user->id)->get()->first();
+          if($subscription){
+            $blocked = $user->blocked == 'true' ? 'false' : 'true';
+            $user->update(['blocked'=>$blocked]);
+          }else{
+            return ["status"=>"error"];
+          }
+
+         return ['data'=>$user];
     }
 
     /**

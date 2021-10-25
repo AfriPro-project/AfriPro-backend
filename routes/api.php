@@ -32,11 +32,7 @@ Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 Route::post('/forgotPassword',[AuthController::class,'forgotPassword']);
 Route::post('/resetpassword',[AuthController::class,'resetpassword']);
-Route::get('/players/{player_id}/{user_id}',[PlayerBioController::class,'show']);
-Route::post('/events',[EventsController::class,'store']);
-Route::get('/events',[EventsController::class,'showAll']);
-Route::get('/events/{id}',[EventsController::class,'show']);
-Route::post('/attend_event',[EventsAttendeesController::class,'store']);
+
 
 
 //protected routes
@@ -45,6 +41,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/save_player_bio',[PlayerBioController::class,'store']);
     Route::post('/update_player_bio',[PlayerBioController::class,'update']);
     Route::get('/players',[PlayerBioController::class,'showAll']);
+    Route::post('/toggle_blocked',[PlayerBioController::class,'toggleBlocked']);
 
 
     //agent bio
@@ -76,6 +73,12 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
      Route::post('/delete_opportunity',[OpportunitiesController::class,'destroy']);
      Route::post('/apply_opportunity',[OpportunitiesAppliedByController::class,'store']);
      Route::get('/opportunities',[OpportunitiesController::class,'showAll']);
+
+    Route::get('/players/{player_id}/{user_id}',[PlayerBioController::class,'show']);
+    Route::post('/events',[EventsController::class,'store']);
+    Route::get('/events',[EventsController::class,'showAll']);
+    Route::get('/events/{id}',[EventsController::class,'show']);
+    Route::post('/attend_event',[EventsAttendeesController::class,'store']);
 
 
 

@@ -12,56 +12,48 @@ use App\Models\Verification_tokens;
 class AuthController extends Controller
 {
     public function register(Request $request){
-        $fields = $request->validate([
-            'first_name' => 'required|string',
-            'last_name'=> 'required|string',
-            'email'=>'required|string|unique:users',
-            'password'=>'required|string|confirmed',
-            'phone_number'=>'string',
-            'phone_number_prefix'=>'string',
-            'user_type'=>'required|string',
-            'referred_by'=>'string'
-        ]);
-
         //check if user was referred by someone
-        $userFound = User::where('referral_code',$fields['referred_by'])->first();
+        $userFound = User::where('referral_code',$request->referred_by)->first();
         if(!$userFound){
-            $fields['referred_by'] = '';
+            $request->referred_by = '';
+        }
+
+        //check if user exist
+        if($request->email  !=''){
+            $userFoundByEmail  = User::where('email','=',$request->email);
+            if($userFoundByEmail){
+                return response(['failed'],302);
+            }
+            $request['blocked'] = 'false';
+        }else{
+            $request['blocked'] = 'true';
         }
 
         $referralCodeInstance = new ReferralCodesController();
-        $referralCode = $referralCodeInstance->store($fields);
+        $referralCode = $referralCodeInstance->store($request);
 
-        $user = User::create([
-            'first_name' => $fields['first_name'],
-            'last_name'=> $fields['last_name'],
-            'email'=>$fields['email'],
-            'password'=> md5($fields['password']),
-            'phone_number'=>$fields['phone_number'],
-            'phone_number_prefix'=>$fields['phone_number_prefix'],
-            'user_type'=>$fields['user_type'],
-            'blocked'=>'false',
-            'referral_code'=>$referralCode,
-            'referred_by'=>$fields['referred_by']
-        ]);
+        $request['password'] = md5($request->password);
+        $user = User::create($request->all());
 
         $referralCodeInstance->update($user->id,$referralCode);
 
-        $token = $user->createToken('userToken')->plainTextToken;
+        if($request->email != ''){
+            $token = $user->createToken('userToken')->plainTextToken;
+            $response = [
+                'status'=>'success',
+                'user'=>$user,
+                'token'=>$token
+            ];
 
+            $verificationToken = new VerificationTokensController();
+            $verificationToken->store($request,$token);
+            $this->sendVerificationEmail($request,$token);
+            $this->sendWelcomeEmail($request);
+            return response($response, 200);
+        }else{
+            return $user;
+        }
 
-        $response = [
-            'status'=>'success',
-            'user'=>$user,
-            'token'=>$token
-        ];
-
-
-        $verificationToken = new VerificationTokensController();
-        $verificationToken->store($fields,$token);
-        // $this->sendVerificationEmail($fields,$token);
-        // $this->sendWelcomeEmail($fields);
-        return response($response, 200);
     }
 
     public function login(Request $request){
