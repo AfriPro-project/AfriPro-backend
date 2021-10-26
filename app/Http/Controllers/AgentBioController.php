@@ -38,7 +38,9 @@ class AgentBioController extends Controller
      */
     public function show(Request $request)
     {
-        $agentBio = AgentBio::where('agent_id',$request['agent_id'])->first();
+        $agentBio = AgentBio::where('agent_id',$request->user_id)
+        ->leftJoin('users','agent_bios.agent_id','users.id')
+        ->first();
         return response($agentBio, 200);
     }
 

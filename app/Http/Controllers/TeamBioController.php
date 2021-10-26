@@ -37,7 +37,9 @@ class TeamBioController extends Controller
      */
     public function show(Request $request)
     {
-        $teamBio = TeamBio::where('club_official_id',$request['club_official_id'])->first();
+        $teamBio = TeamBio::where('club_official_id',$request->user_id)
+        ->leftJoin('users','team_bios.club_official_id','users.id')
+        ->first();
         return response($teamBio, 200);
     }
 
