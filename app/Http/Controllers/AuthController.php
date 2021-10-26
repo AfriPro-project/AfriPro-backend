@@ -252,4 +252,35 @@ class AuthController extends Controller
         );
         $mailer->send();
     }
+
+    public function updateProfile(Request $request){
+        $user = User::find($request->user_id);
+        $user->update($request->all());
+        $token = $request->bearerToken();
+        $response = [
+            'status'=>'success',
+            'user'=>$user,
+            'token'=>$token
+        ];
+        return $response;
+    }
+
+    public function updatePassword(Request $request){
+        $user = User::find($request->user_id);
+        if($user->password != md5($request->old_password)) return ['status'=>'failed'];
+        $password = md5($request->new_password);
+        $user->update(['password'=>$password]);
+        return ['status'=>'done'];
+    }
+
+    public function anonymousLogin(Request $request){
+        $user = User::find($request->user_id);
+        $token = $user->createToken('userToken')->plainTextToken;
+        $response = [
+            'status'=>'success',
+            'user'=>$user,
+            'token'=>$token
+        ];
+        return $response;
+    }
 }

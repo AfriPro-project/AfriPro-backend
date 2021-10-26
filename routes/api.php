@@ -15,6 +15,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
+use Illuminate\Auth\AuthenticationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,12 @@ Route::post('/resetpassword',[AuthController::class,'resetpassword']);
 
 //protected routes
 Route::group(['middleware'=>['auth:sanctum']],function(){
+
+    //update user basic info
+    Route::post('/update_registration',[AuthController::class,'updateProfile']);
+    Route::post('/update_password',[AuthController::class,'updatePassword']);
+    Route::post('/anonymous_login',[AuthController::class,'anonymousLogin']);
+
     //player bio
     Route::post('/save_player_bio',[PlayerBioController::class,'store']);
     Route::post('/update_player_bio',[PlayerBioController::class,'update']);
