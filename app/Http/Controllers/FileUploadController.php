@@ -83,12 +83,12 @@ class FileUploadController extends Controller
 
         if ($file = $request->file('file')) {
             //remove previous file if  found
-            $path = storage_path('app/'.$request->previousFilePath);
-            if(File::exists($path)){
-                File::delete($path);
+            if(strpos($request->previousFilePath,'default_avatar') !== false){
+                $path = storage_path('app/'.$request->previousFilePath);
+                if(File::exists($path)){
+                    File::delete($path);
+                }
             }
-
-
 
             $path = $file->store('public/files');
             $name = $file->getClientOriginalName();
