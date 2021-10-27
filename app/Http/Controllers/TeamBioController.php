@@ -29,6 +29,13 @@ class TeamBioController extends Controller
         return response($teamBio);
     }
 
+    public function showBioOnly(Request $request)
+    {
+        $teamBio = TeamBio::where('club_official_id',$request->club_official_id)->get()->first();
+        return response($teamBio, 200);
+    }
+
+
     /**
      * Display the specified resource.
      *
