@@ -33,7 +33,7 @@ Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 Route::post('/forgotPassword',[AuthController::class,'forgotPassword']);
 Route::post('/resetpassword',[AuthController::class,'resetpassword']);
-
+Route::get('/players/{player_id}',[PlayerBioController::class,'showBioOnly']);
 
 
 //protected routes
@@ -49,6 +49,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/update_player_bio',[PlayerBioController::class,'update']);
     Route::get('/players',[PlayerBioController::class,'showAll']);
     Route::post('/toggle_blocked',[PlayerBioController::class,'toggleBlocked']);
+
 
 
     //agent bio

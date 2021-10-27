@@ -36,6 +36,11 @@ class PlayerBioController extends Controller
         return response($playerBio);
     }
 
+    public function showBioOnly(Request $request){
+        $playerBio = PlayerBio::where('player_id','=',$request->player_id)->get()->first();
+        return $playerBio;
+    }
+
     /**
      * Display the specified resource.
      *

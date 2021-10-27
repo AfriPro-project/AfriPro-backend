@@ -12,6 +12,8 @@ use App\Models\Verification_tokens;
 class AuthController extends Controller
 {
     public function register(Request $request){
+
+
         //check if user was referred by someone
         $userFound = User::where('referral_code',$request->referred_by)->first();
         if(!$userFound){
@@ -20,9 +22,11 @@ class AuthController extends Controller
 
         //check if user exist
         if($request->email  !=''){
-            $userFoundByEmail  = User::where('email','=',$request->email);
+
+            $userFoundByEmail  = User::where('email','=',$request->email)->get()->first();
             if($userFoundByEmail){
-                return response(['failed'],302);
+                $response = ['status'=>'error','message'=>'This email is alredy registered'];
+                return response($response,200);
             }
             $request['blocked'] = 'false';
         }else{
@@ -45,10 +49,10 @@ class AuthController extends Controller
                 'token'=>$token
             ];
 
-            $verificationToken = new VerificationTokensController();
-            $verificationToken->store($request,$token);
-            $this->sendVerificationEmail($request,$token);
-            $this->sendWelcomeEmail($request);
+            // $verificationToken = new VerificationTokensController();
+            // $verificationToken->store($request,$token);
+            // $this->sendVerificationEmail($request,$token);
+            // $this->sendWelcomeEmail($request);
             return response($response, 200);
         }else{
             return $user;
