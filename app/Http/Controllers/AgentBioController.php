@@ -30,6 +30,14 @@ class AgentBioController extends Controller
         return response($agentBio);
     }
 
+
+    public function showBioOnly(Request $request)
+    {
+        $agentBio = AgentBio::where('agent_id',$request->agent_id)->get()->first();
+        return response($agentBio, 200);
+    }
+
+
     /**
      * Display the specified resource.
      *
