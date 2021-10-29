@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdvertsController;
 use App\Http\Controllers\AgentBioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -88,6 +89,10 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get('/events',[EventsController::class,'showAll']);
     Route::get('/events/{id}',[EventsController::class,'show']);
     Route::post('/attend_event',[EventsAttendeesController::class,'store']);
+
+
+    Route::post('/adverts',[AdvertsController::class,'store']);
+    Route::get('/adverts',[AdvertsController::class,'showAll']);
 
 
 
