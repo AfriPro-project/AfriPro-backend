@@ -35,6 +35,8 @@ Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 Route::post('/forgotPassword',[AuthController::class,'forgotPassword']);
 Route::post('/resetpassword',[AuthController::class,'resetpassword']);
+Route::post('/anonymous_login',[AuthController::class,'anonymousLogin']);
+
 
 //protected routes
 Route::group(['middleware'=>['auth:sanctum']],function(){
@@ -47,7 +49,6 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     //update user basic info
     Route::post('/update_registration',[AuthController::class,'updateProfile']);
     Route::post('/update_password',[AuthController::class,'updatePassword']);
-    Route::post('/anonymous_login',[AuthController::class,'anonymousLogin']);
 
     //player bio
     Route::post('/save_player_bio',[PlayerBioController::class,'store']);
@@ -102,7 +103,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
 
     //ChatRooms
     Route::post('/chatrooms',[ChatRoomsController::class,'createChatRoom']);
-    Route::post('/chatrooms/join',[ChatRoomsController::class,'joinChatRoom']);
+    Route::post('/chatrooms/join/',[ChatRoomsController::class,'joinChatRoom']);
     Route::post('/chatrooms/messages',[ChatRoomsController::class,'sendMessage']);
     Route::get('/chatrooms/messages/latest/{user_id}',[ChatRoomsController::class,'getLatestMessages']);
     Route::get('/chatrooms/messages/{room_id}',[ChatRoomsController::class,'getRoomMessages']);

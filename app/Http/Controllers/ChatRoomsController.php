@@ -117,9 +117,12 @@ class ChatRoomsController extends Controller
                 $latestMessage['read'] = 'false';
             }
 
+            $link = md5($chatRoom->room_id);
+            $link = url('/').'/chatrooms/join/'.$link;
             $message = [
+                'room_link'=>$link,
                 'room_name'=>$chatRoomName,
-                'room_id'=>$latestMessage->room_id,
+                'room_id'=>$chatRoom->room_id,
                 'room_type'=>$chatRoom->room_type,
                 'muted'=>$chatRoom->muted,
                 'message'=>$latestMessage
