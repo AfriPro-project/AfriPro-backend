@@ -10,7 +10,7 @@ use App\Models\Transactions;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use AmrShawky\LaravelCurrency\Facade\Currency;
-use App\Models\VerificationDocs;
+
 
 class PaymentController extends Controller
 {
@@ -162,15 +162,6 @@ class PaymentController extends Controller
                 }
                 $transaction = Transactions::where('transaction_ref','=',$query['tx_ref'])->get()->first();
                 $transaction->update(['status'=>'complete']);
-                if($user->email == ""){
-                    //verify the player
-                    VerificationDocs::create([
-                        "user_id"=>$user->id,
-                        "photo"=>"n/a",
-                        "passport"=>"n/a",
-                        "status"=>"verified"
-                    ]);
-                }
                 return redirect('/done');
 
              }else{

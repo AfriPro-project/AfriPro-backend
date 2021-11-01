@@ -49,12 +49,19 @@ class PlayerBioController extends Controller
      */
     public function show(Request $request)
     {
-        $playerBio = PlayerBio::select('users.*','player_bios.*', 'verification_docs.*', DB::raw('count(profile_views.player_id) As views'))
+        $playerBio = PlayerBio::select('users.*','player_bios.*',"subscriptions.*", DB::raw('count(profile_views.player_id) As views'))
         ->leftJoin('users','player_bios.player_id','users.id')
-        ->leftJoin('verification_docs','player_bios.player_id','verification_docs.user_id')
+        ->leftJoin('subscriptions','player_bios.player_id','subscriptions.user_id')
         ->leftJoin('profile_views','player_bios.player_id','profile_views.player_id')
         ->where('player_bios.player_id',$request->player_id)
         ->get()->first();
+
+        if($playerBio->service_id == 2){
+            $playerBio['status'] = 'verified';
+        }else{
+            $playerBio['status'] = 'pending';
+        }
+
 
         $user = auth()->user();
         if($playerBio->player_id != $request->user_id && $user->id != $playerBio->agent){
@@ -102,26 +109,34 @@ class PlayerBioController extends Controller
 
          if($request->type == "verified"){
             $players = Subscriptions::where('subscriptions.service_id','=',2)
-            ->where("verification_docs.status",'=',"verified")
             ->where('player_bios.primary_position','!=',null)
             ->where('player_bios.date_of_birth','!=',null)
             ->where('users.blocked','=','false')
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
             ->join('users','users.id','=','subscriptions.user_id')
-            ->join("verification_docs","player_bios.player_id","verification_docs.user_id")
-            ->select("users.first_name","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","verification_docs.status","player_bios.date_of_birth")
+            ->select("users.first_name","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","player_bios.date_of_birth")
             ->orderBy('subscriptions.id', 'desc')
             ->paginate(5);
+            foreach ($players as $player) {
+                $player['status'] = 'veririfed';
+            }
          }else if($request->type=="agent"){
             $user = auth()->user();
             $players = User::where('users.agent','=',$user->id)
             ->leftJoin('player_bios','users.id','=','player_bios.player_id')
-            ->leftJoin("verification_docs","player_bios.player_id","verification_docs.user_id")
-            ->select("users.first_name","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","verification_docs.status","player_bios.date_of_birth","users.blocked")
+            ->leftJoin('subscriptions','player_bios.player_id','subscriptions.user_id')
+            ->select("users.first_name","subscriptions.service_id","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","player_bios.date_of_birth","users.blocked")
             ->orderBy('users.created_at','desc')
-            ->paginate(6);
+            ->paginate(12);
+            foreach ($players as $player) {
+                if($player->service_id == 2){
+                    $player['status'] = 'veririfed';
+                }else{
+                    $player['status'] = 'pending';
+                }
+            }
          }else{
-             $request->height = $request->height > 0 ? $request->height : 0;
+
             $players = Subscriptions::where('subscriptions.service_id','!=',0)
             ->where('player_bios.primary_position','!=',null)
             ->where('player_bios.current_country','like',"%".filterValues($request->current_country)."%")
@@ -131,13 +146,32 @@ class PlayerBioController extends Controller
             ->where('player_bios.citizenship','like',"%".filterValues($request->citizenship)."%")
             ->where('player_bios.height_cm',$operator,filterValues($request->height))
             ->where('player_bios.date_of_birth','!=',null)
+            // ->where('player_bios.transfermarket_link',$isTransferMarketlink,null)
+            // ->where('player_bios.youtube_link',$isYoutubeLink,null)
+            ->where("subscriptions.expiry",'>',date('Y-m-d'))
             ->where('users.blocked','=','false')
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
             ->join('users','users.id','=','subscriptions.user_id')
-            ->leftJoin("verification_docs","player_bios.player_id","verification_docs.user_id")
-            ->select("users.first_name","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","verification_docs.status","player_bios.date_of_birth")
-            ->orderBy('subscriptions.id', 'desc')
-            ->paginate(5);
+            ->select("users.first_name","subscriptions.service_id","subscriptions.expiry","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","player_bios.date_of_birth")
+            ->orderBy('subscriptions.id', 'desc');
+
+            if($request->isYoutubeLink == 'Yes'){
+              $players = $players->where('player_bios.youtube_link','!=',null);
+            }
+
+            if($request->isTransferMarketlink == 'Yes'){
+                $players = $players->where('player_bios.transfermarket_link','!=',null);
+            }
+
+            $players = $players->paginate(12);
+
+            foreach ($players as $player) {
+                if($player->service_id == 2){
+                    $player['status'] = 'veririfed';
+                }else{
+                    $player['status'] = 'pending';
+                }
+            }
         }
         return $players;
 

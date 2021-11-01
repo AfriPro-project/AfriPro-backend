@@ -58,9 +58,9 @@ class OpportunitiesController extends Controller
     public function showAll(Request $request)
     {
          if($request->user_type == "club_official"){
-            $opportunities = Opportunities::where('user_id','=',$request->user_id)->orderBy('id', 'desc')->paginate(5);
+            $opportunities = Opportunities::where('user_id','=',$request->user_id)->orderBy('id', 'desc')->paginate(12);
          }else{
-            $opportunities = Opportunities::where('status','=','open')->orderBy('id', 'desc')->paginate(5);
+            $opportunities = Opportunities::where('status','=','open')->orderBy('id', 'desc')->paginate(12);
         }
         return $opportunities;
     }

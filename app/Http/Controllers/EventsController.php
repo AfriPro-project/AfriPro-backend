@@ -39,9 +39,9 @@ class EventsController extends Controller
     {
 
         if($request->upcoming){
-            $events = Events::where('start_date_time','>',date('Y-m-d h:i'))->orderBy('id', 'desc')->paginate(5);
+            $events = Events::where('start_date_time','>',date('Y-m-d h:i'))->orderBy('id', 'desc')->paginate(12);
         }else{
-            $events = Events::where('id','!=',null)->orderBy('id', 'desc')->paginate(5);
+            $events = Events::where('id','!=',null)->orderBy('id', 'desc')->paginate(12);
         }
 
         return $events;
