@@ -10,6 +10,7 @@ class ChatRooms extends Model
     use HasFactory;
     protected $fillable = [
         "room_name",
-        'room_type'
+        'room_type',
+        'owner'
     ];
 }

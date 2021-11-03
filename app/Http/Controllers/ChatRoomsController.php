@@ -14,7 +14,19 @@ class ChatRoomsController extends Controller
 {
     //create a new chat room
     function createChatRoom(Request $request){
+        $user = auth()->user();
+        $request['owner'] = $user->id;
         $chatRoom = ChatRooms::create($request->all());
+        $request['room_id'] = $chatRoom->id;
+        $this->joinChatRoom($request);
+
+        //structrue message
+        $request['message'] = 'topic created';
+        $request['type'] = 'bot message';
+        unset($request['room_name']);
+        unset($request['owner']);
+        unset($request['room_type']);
+        $this->sendMessage($request);
         return $chatRoom;
     }
 
@@ -39,7 +51,8 @@ class ChatRoomsController extends Controller
 
         $roomJoined = ChatRoomUsers::create([
             'user_id' => $user,
-            'room_id' => $room->id
+            'room_id' => $room->id,
+            'muted' => 'false'
         ]);
 
         return response([
@@ -62,9 +75,15 @@ class ChatRoomsController extends Controller
         if($room == null){
             return response(['status'=>'error','message'=>'room not found']);
         }
+
+        unset($request['room_name']);
         $message = ChatRoomMessages::create($request->all());
         $message['first_name'] = $user->first_name;
         $message['last_name'] = $user->last_name;
+        $message['sent'] = 'Today';
+        $message['seen'] = 'true';
+        $message['status'] = 'receiving';
+        $message['time'] = date('h:i A',strtotime($message['created_at']));
 
         return response([
             'status'=>'sucess',
@@ -73,14 +92,10 @@ class ChatRoomsController extends Controller
     }
 
     //get user latest messages
-    function getLatestMessages(Request $request){
-        if($request->user_id == null){
-            return response(['status'=>'error','message'=>'user id is required']);
-        }
-
+    function getLatestMessages(){
         $user = auth()->user();
 
-        $chatRooms = ChatRoomUsers::where('user_id','=',$request->user_id)
+        $chatRooms = ChatRoomUsers::where('user_id','=',$user->id)
         ->leftJoin('chat_rooms','chat_room_users.room_id','chat_rooms.id')
         ->get();
         $messages = [];
@@ -89,7 +104,7 @@ class ChatRoomsController extends Controller
             ->orderBy('id','desc')
             ->first();
             $chatRoomName  = $chatRoom->room_name;
-            if(strpos($chatRoomName,$user->email)){
+            if(strpos($chatRoomName,$user->email) > -1){
                 $chatRoomName = str_replace($user->email, "",$chatRoomName);
                 $chatRoomName = str_replace("|", "",$chatRoomName);
                 $recipient = User::where('email','=',$chatRoomName)->first();
@@ -106,15 +121,14 @@ class ChatRoomsController extends Controller
             $latestMessage['sent'] = $this->getLastSent($sent);
 
             $unreadMessages = ChatRoomMessages::where('room_id','=',$chatRoom->room_id)
-            ->where('read','like',"%".$user->email."%")->get();
+            ->where('read','not like',"%".$user->email."%")->get();
 
-            $msg = ChatRoomMessages::where('room_id','=',$chatRoom->room_id)->get();
+            $latestMessage['unread_messages'] =  sizeOf($unreadMessages);
 
-            $latestMessage['unread_messages'] = sizeOf($msg) - sizeOf($unreadMessages);
-            if(sizeof($unreadMessages) > 0){
-                $latestMessage['read'] = 'true';
+            if(sizeof(explode(",",$latestMessage['read'])) > 1){
+                $latestMessage['seen'] = 'true';
             }else{
-                $latestMessage['read'] = 'false';
+                $latestMessage['seen'] = 'false';
             }
 
             $link = md5($chatRoom->room_id);
@@ -137,7 +151,7 @@ class ChatRoomsController extends Controller
 
     function getLastSent($sent){
         if($sent == date('Y-m-d')){
-            return gmdate('h:m A',strtotime($sent));
+            return 'Today';
         }
 
         $today = Carbon::now();;
@@ -168,10 +182,11 @@ class ChatRoomsController extends Controller
         $messages = DB::update('UPDATE chat_room_messages SET `read`=CONCAT(`read`,",'.$user->email.'") WHERE  `room_id` = "'.$request->room_id.'" and `read` not like "%'.$user->email.'%"');
 
 
+        //get all mesages
         $messages = ChatRoomMessages::where('room_id','=',$request->room_id)
         ->leftJoin('users','chat_room_messages.sender_id','users.id')
         ->select('chat_room_messages.message','chat_room_messages.sender_id','chat_room_messages.type','chat_room_messages.image','chat_room_messages.created_at','chat_room_messages.id',"users.first_name","users.last_name","chat_room_messages.read")
-        ->orderBy('chat_room_messages.id','desc');
+        ->orderBy('chat_room_messages.created_at','desc');
 
         //get room
         $room = ChatRooms::find($request->room_id);
@@ -184,8 +199,22 @@ class ChatRoomsController extends Controller
 
         foreach ($messages as $message) {
             $message['sent'] = $this->getLastSent(date('Y-m-d',strtotime($message['created_at'])));
+
+            if(sizeof(explode(",",$message['read'])) > 1){
+                $message['seen'] = 'true';
+            }else{
+                $message['seen'] = 'false';
+            }
+
+            if($message->sender_id == $user->id){
+                $message['status'] = 'sending';
+            }else{
+                $message['status'] = 'receiving';
+            }
+
+            $message['time'] = date('h:i A',strtotime($message['created_at']));
         }
-        return ['status'=>'sucess','messages'=>$messages];
+        return ['status'=>'sucess','room'=>$room,'messages'=>$messages];
     }
 
     function toggleMute(Request $request){

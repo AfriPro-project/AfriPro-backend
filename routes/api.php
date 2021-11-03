@@ -105,7 +105,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/chatrooms',[ChatRoomsController::class,'createChatRoom']);
     Route::post('/chatrooms/join/',[ChatRoomsController::class,'joinChatRoom']);
     Route::post('/chatrooms/messages',[ChatRoomsController::class,'sendMessage']);
-    Route::get('/chatrooms/messages/latest/{user_id}',[ChatRoomsController::class,'getLatestMessages']);
+    Route::get('/chatrooms/messages/latest',[ChatRoomsController::class,'getLatestMessages']);
     Route::get('/chatrooms/messages/{room_id}',[ChatRoomsController::class,'getRoomMessages']);
     Route::post('/chatrooms/toggleMute',[ChatRoomsController::class,'toggleMute']);
     Route::post('/chatrooms/leave',[ChatRoomsController::class,'leaveRoom']);
