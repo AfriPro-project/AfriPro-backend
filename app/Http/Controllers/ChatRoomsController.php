@@ -72,8 +72,52 @@ class ChatRoomsController extends Controller
         $request['read'] = $user->email;
         //check if the room exist
         $room = ChatRooms::find($request->room_id);
+        $user = auth()->user();
         if($room == null){
-            return response(['status'=>'error','message'=>'room not found']);
+
+            //create a one on one chat room for agent and player
+            //here room name will be the email of the player
+            $chatRoomName = $request->room_name.'|'.$user->email;
+
+            $room = ChatRooms::where('room_name',$chatRoomName)->first();
+
+            if($room == null){
+
+            $room = ChatRooms::create([
+                'owner'=>$user->id,
+                'room_name'=>$chatRoomName,
+                'room_type'=>'oneonone'
+            ]);
+
+            $player = User::where('email',$request->room_name)->first();
+
+            if($player == null){
+                return response(['status'=>'error','message'=>'room not found']);
+            }
+
+
+
+            //add agent and player to room
+
+            ChatRoomUsers::create([
+                'room_id'=>$room->id,
+                'user_id'=>$player->id,
+                'muted'=>'false'
+            ]);
+
+            ChatRoomUsers::create([
+                'room_id'=>$room->id,
+                'user_id'=>$user->id,
+                'muted'=>'false'
+            ]);
+
+            $request['room_id'] = $room->id;
+            }else{
+                $request['room_id'] = $room->id;
+            }
+
+            //return $chatRoom;
+
         }
 
         unset($request['room_name']);
@@ -87,6 +131,7 @@ class ChatRoomsController extends Controller
 
         return response([
             'status'=>'sucess',
+            'room'=>$room,
             'message'=>$message
         ]);
     }
@@ -108,7 +153,7 @@ class ChatRoomsController extends Controller
                 $chatRoomName = str_replace($user->email, "",$chatRoomName);
                 $chatRoomName = str_replace("|", "",$chatRoomName);
                 $recipient = User::where('email','=',$chatRoomName)->first();
-                $chatRoomName = $recipient->first_name;
+                $chatRoomName = $recipient['first_name'][0].'.'.$recipient["last_name"];
             }
 
             if($latestMessage->sender_id == $user->id){
@@ -173,9 +218,19 @@ class ChatRoomsController extends Controller
 
     //get room messages
     function getRoomMessages(Request $request){
+
         if($request->room_id == null){
             return response(['status'=>'error','message'=>'room id is required']);
         }
+
+        //check if chat room exists
+        $chatRoom = ChatRooms::where('id',$request->room_id)
+        ->orWhere('room_name',$request->room_id)->first();
+        if($chatRoom==null){
+            return ['status'=>'failed','messages'=>'room not found'];
+        }
+
+        $request['room_id'] = $chatRoom->id;
 
         //update all messages to read
         $user = auth()->user();

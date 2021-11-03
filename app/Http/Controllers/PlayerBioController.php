@@ -62,6 +62,8 @@ class PlayerBioController extends Controller
             $playerBio['status'] = 'pending';
         }
 
+        $playerBio['agentDetails'] = User::find($playerBio->agent);
+
 
         $user = auth()->user();
         if($playerBio->player_id != $request->user_id && $user->id != $playerBio->agent){
@@ -118,7 +120,7 @@ class PlayerBioController extends Controller
             ->orderBy('subscriptions.id', 'desc')
             ->paginate(5);
             foreach ($players as $player) {
-                $player['status'] = 'veririfed';
+                $player['status'] = 'verified';
             }
          }else if($request->type=="agent"){
             $user = auth()->user();
@@ -130,7 +132,7 @@ class PlayerBioController extends Controller
             ->paginate(12);
             foreach ($players as $player) {
                 if($player->service_id == 2){
-                    $player['status'] = 'veririfed';
+                    $player['status'] = 'verified';
                 }else{
                     $player['status'] = 'pending';
                 }
@@ -146,8 +148,6 @@ class PlayerBioController extends Controller
             ->where('player_bios.citizenship','like',"%".filterValues($request->citizenship)."%")
             ->where('player_bios.height_cm',$operator,filterValues($request->height))
             ->where('player_bios.date_of_birth','!=',null)
-            // ->where('player_bios.transfermarket_link',$isTransferMarketlink,null)
-            // ->where('player_bios.youtube_link',$isYoutubeLink,null)
             ->where("subscriptions.expiry",'>',date('Y-m-d'))
             ->where('users.blocked','=','false')
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
@@ -167,7 +167,7 @@ class PlayerBioController extends Controller
 
             foreach ($players as $player) {
                 if($player->service_id == 2){
-                    $player['status'] = 'veririfed';
+                    $player['status'] = 'verified';
                 }else{
                     $player['status'] = 'pending';
                 }
