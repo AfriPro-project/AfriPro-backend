@@ -250,7 +250,7 @@ class ChatRoomsController extends Controller
           $messages=$messages->leftJoin('player_bios','chat_rooms.user_id','player_bios.player_id');
           $messages=$messages->select('player_bios.pictures');
         }
-        $messages = $messages->get();
+        $messages = $messages->paginate(20);
 
         foreach ($messages as $message) {
             $message['sent'] = $this->getLastSent(date('Y-m-d',strtotime($message['created_at'])));
