@@ -27,6 +27,12 @@ io.on('connection', client => {
     client.broadcast.to(roomId).emit('message', message.message);
   })
 
+  //send message to all room uesrs
+  client.on('broadcast',({roomId, message})=>{
+    io.to(roomId).emit('message', message.message);
+  })
+
+
   client.on('setSeen',({id,roomId})=>{
     client.broadcast.to(roomId).emit('seen', id);
   })

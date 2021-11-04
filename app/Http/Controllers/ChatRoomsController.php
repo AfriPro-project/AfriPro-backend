@@ -38,9 +38,7 @@ class ChatRoomsController extends Controller
         $request['message'] = 'changed this topic to '.$request->new_name;
         $request['type'] = 'bot message';
         unset($request['old_name']);
-        $this->sendMessage($request);
-
-        return $room;
+        return $this->sendMessage($request);
     }
 
     //join a chat room
@@ -67,6 +65,14 @@ class ChatRoomsController extends Controller
             'room_id' => $room->id,
             'muted' => 'false'
         ]);
+
+        if($room->room_type == 'group'){
+            //structrue message
+            $request['message'] = $user->first_name.' joined this topic';
+            $request['type'] = 'bot message';
+            unset($request['user_id']);
+            $this->sendMessage($request);
+        }
 
         return response([
             'status'=>'sucess',
@@ -321,9 +327,7 @@ class ChatRoomsController extends Controller
          $request['message'] = $user->first_name.' left this topic';
          $request['type'] = 'bot message';
          unset($request['user_id']);
-         $this->sendMessage($request);
-
-        return ['status'=>'success','message'=>"You've left this topic"];
+         return $this->sendMessage($request);
     }
 
     function deleteMessage(Request $request){
