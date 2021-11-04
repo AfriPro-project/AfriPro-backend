@@ -109,6 +109,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get('/chatrooms/messages/{room_id}',[ChatRoomsController::class,'getRoomMessages']);
     Route::post('/chatrooms/toggleMute',[ChatRoomsController::class,'toggleMute']);
     Route::post('/chatrooms/leave',[ChatRoomsController::class,'leaveRoom']);
+    Route::post('/chatrooms/messages/delete',[ChatRoomsController::class,'deleteMessage']);
 
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);
 });

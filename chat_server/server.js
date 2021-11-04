@@ -5,7 +5,7 @@ const {get,post} = require('./utils/api');
 
 io.on('connection', client => {
   console.log('connected');
-  
+
 
   //join a room
   client.on('joinRoom',(roomId)=>{

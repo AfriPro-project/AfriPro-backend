@@ -291,4 +291,13 @@ class ChatRoomsController extends Controller
         $room->delete();
         return ['status'=>'success','message'=>"You've left this topic"];
     }
+
+    function deleteMessage(Request $request){
+      $message = ChatRoomMessages::find($request->id);
+      if($message){
+          $message->delete();
+          return ['status'=>'success','message'=>'messaged deleted'];
+      }
+      return ['status'=>'failed'];
+    }
 }
