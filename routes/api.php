@@ -103,6 +103,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
 
     //ChatRooms
     Route::post('/chatrooms',[ChatRoomsController::class,'createChatRoom']);
+    Route::post('/chatrooms/update',[ChatRoomsController::class,'updateChatRoomName']);
     Route::post('/chatrooms/join/',[ChatRoomsController::class,'joinChatRoom']);
     Route::post('/chatrooms/messages',[ChatRoomsController::class,'sendMessage']);
     Route::get('/chatrooms/messages/latest',[ChatRoomsController::class,'getLatestMessages']);
@@ -110,6 +111,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/chatrooms/toggleMute',[ChatRoomsController::class,'toggleMute']);
     Route::post('/chatrooms/leave',[ChatRoomsController::class,'leaveRoom']);
     Route::post('/chatrooms/messages/delete',[ChatRoomsController::class,'deleteMessage']);
+    Route::get('/chatrooms/{room_id}/members',[ChatRoomsController::class,'getRoomMembers']);
 
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);
 });

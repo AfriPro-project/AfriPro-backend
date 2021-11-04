@@ -30,6 +30,19 @@ class ChatRoomsController extends Controller
         return $chatRoom;
     }
 
+    //update chat room name
+    function updateChatRoomName(Request $request){
+        $room = ChatRooms::find($request->room_id);
+        $room->update(['room_name'=>$request->new_name]);
+        //structrue message
+        $request['message'] = 'changed this topic to '.$request->new_name;
+        $request['type'] = 'bot message';
+        unset($request['old_name']);
+        $this->sendMessage($request);
+
+        return $room;
+    }
+
     //join a chat room
     function joinChatRoom(Request $request){
         if($request->room_id == null){
@@ -183,6 +196,7 @@ class ChatRoomsController extends Controller
                 'room_name'=>$chatRoomName,
                 'room_id'=>$chatRoom->room_id,
                 'room_type'=>$chatRoom->room_type,
+                'owner'=>$chatRoom->owner,
                 'muted'=>$chatRoom->muted,
                 'message'=>$latestMessage
             ];
@@ -244,12 +258,25 @@ class ChatRoomsController extends Controller
         ->orderBy('chat_room_messages.created_at','desc');
 
         //get room
-        $room = ChatRooms::find($request->room_id);
+        $room = ChatRooms::where('chat_rooms.id','=',$request->room_id)
+        ->leftJoin('chat_room_users','chat_rooms.id','chat_room_users.room_id')
+        ->where('chat_room_users.user_id',$user->id)
+        ->first();
+
+        if($room == null){
+            return ['status'=>'failed','messages'=>'user not in room'];
+        }
+
+        $link = md5($chatRoom->room_id);
+        $link = url('/').'/chatrooms/join/'.$link;
+        $room['room_link']=$link;
+
 
         if($room->type == 'group'){
           $messages=$messages->leftJoin('player_bios','chat_rooms.user_id','player_bios.player_id');
           $messages=$messages->select('player_bios.pictures');
         }
+
         $messages = $messages->paginate(20);
 
         foreach ($messages as $message) {
@@ -299,5 +326,14 @@ class ChatRoomsController extends Controller
           return ['status'=>'success','message'=>'messaged deleted'];
       }
       return ['status'=>'failed'];
+    }
+
+    function getRoomMembers(Request $request){
+        $members = ChatRoomUsers::where('chat_room_users.room_id','=',$request->room_id)
+        ->leftJoin('chat_rooms','chat_rooms.id','chat_room_users.room_id')
+        ->leftJoin('users','chat_room_users.user_id','users.id')
+        ->leftJoin('player_bios','chat_room_users.user_id','player_bios.player_id')
+        ->get();
+        return $members;
     }
 }
