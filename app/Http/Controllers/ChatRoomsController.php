@@ -316,6 +316,13 @@ class ChatRoomsController extends Controller
         $room = ChatRoomUsers::where('user_id','=',$user->id)
         ->where('room_id','=',$request->room_id);
         $room->delete();
+
+         //structrue message
+         $request['message'] = $user->first_name.' left this topic';
+         $request['type'] = 'bot message';
+         unset($request['user_id']);
+         $this->sendMessage($request);
+
         return ['status'=>'success','message'=>"You've left this topic"];
     }
 
