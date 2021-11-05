@@ -9,6 +9,8 @@ use App\Models\ChatRoomUsers;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+
 
 class ChatRoomsController extends Controller
 {
@@ -46,32 +48,36 @@ class ChatRoomsController extends Controller
         if($request->room_id == null){
             return response(['status'=>'error','message'=>'room id is required']);
         }
-        $user = auth()->user()->id;
+        $user = auth()->user();
         //check if the room exist
+        $request['room_id'] = base64_decode($request->room_id);
+        $request['room_id'] = explode('_',$request['room_id']);
+        $request['room_id'] = $request['room_id'][0];
+
         $room = ChatRooms::find($request->room_id);
         if($room == null){
             return response(['status'=>'error','message'=>'room not found']);
         }
         //check if user is already in chat room
-        $checkUser = ChatRoomUsers::where('user_id','=',$user)
+        $checkUser = ChatRoomUsers::where('user_id','=',$user->id)
         ->where('room_id','=',$room->id)
         ->get()->first();
         if($checkUser){
-            return response(['status'=>'error','message'=>'you are already in this chat room']);
+            return response(['status'=>'failed','room'=>$room,'message'=>'you are already in this chat room']);
         }
 
         $roomJoined = ChatRoomUsers::create([
-            'user_id' => $user,
+            'user_id' => $user->id,
             'room_id' => $room->id,
             'muted' => 'false'
         ]);
 
         if($room->room_type == 'group'){
             //structrue message
-            $request['message'] = $user->first_name.' joined this topic';
+            $request['message'] = ' joined this topic';
             $request['type'] = 'bot message';
             unset($request['user_id']);
-            $this->sendMessage($request);
+            return $this->sendMessage($request);
         }
 
         return response([
@@ -113,8 +119,6 @@ class ChatRoomsController extends Controller
             if($player == null){
                 return response(['status'=>'error','message'=>'room not found']);
             }
-
-
 
             //add agent and player to room
 
@@ -164,8 +168,9 @@ class ChatRoomsController extends Controller
         ->get();
         $messages = [];
         foreach ($chatRooms as $chatRoom) {
-            $latestMessage = ChatRoomMessages::where('room_id','=',$chatRoom->room_id)
-            ->orderBy('id','desc')
+            $latestMessage = ChatRoomMessages::where('chat_room_messages.room_id','=',$chatRoom->room_id)
+            ->leftJoin('users','chat_room_messages.sender_id','users.id')
+            ->orderBy('chat_room_messages.id','desc')
             ->first();
             $chatRoomName  = $chatRoom->room_name;
             if(strpos($chatRoomName,$user->email) > -1){
@@ -195,8 +200,7 @@ class ChatRoomsController extends Controller
                 $latestMessage['seen'] = 'false';
             }
 
-            $link = md5($chatRoom->room_id);
-            $link = url('/').'/chatrooms/join/'.$link;
+            $link = base64_encode($chatRoom->room_id.'_22352341234534');
             $message = [
                 'room_link'=>$link,
                 'room_name'=>$chatRoomName,
