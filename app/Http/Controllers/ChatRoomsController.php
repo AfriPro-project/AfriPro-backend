@@ -21,7 +21,7 @@ class ChatRoomsController extends Controller
         $this->joinChatRoom($request);
 
         //structrue message
-        $request['message'] = 'topic created';
+        $request['message'] = ' created this topic';
         $request['type'] = 'bot message';
         unset($request['room_name']);
         unset($request['owner']);
@@ -324,7 +324,7 @@ class ChatRoomsController extends Controller
         $room->delete();
 
          //structrue message
-         $request['message'] = $user->first_name.' left this topic';
+         $request['message'] = 'left this topic';
          $request['type'] = 'bot message';
          unset($request['user_id']);
          return $this->sendMessage($request);
