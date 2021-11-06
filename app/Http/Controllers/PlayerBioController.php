@@ -8,6 +8,9 @@ use App\Models\Subscriptions;
 use App\Models\ProfileViews;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\NotificationsController;
+use App\Models\TeamBio;
+
 class PlayerBioController extends Controller
 {
     /**
@@ -74,6 +77,27 @@ class PlayerBioController extends Controller
                     'player_id'=>$request->player_id,
                     'user_id'=>$request->user_id
                 ]);
+
+                $notifcationsController = new NotificationsController();
+
+
+                //structure notification
+                $user = auth()->user();
+                if($user->user_type == 'player'){
+                    return;
+                }
+
+                $request['message'] = $user->user_type == 'agent' ? "An agent" : "A club official";
+                if($user->user_type == 'club_official'){
+                    $team = TeamBio::where('club_official_id',$user->id)->first();
+                    $request['message'] .=' from '.$team->name_of_team;
+                }
+                $request['message'] .=' viewed your profile';
+                $request['route'] = '/profile';
+                $request['status'] = 'new';
+                $request['user_id'] = $playerBio->player_id;
+                unset($request['player_id']);
+                $notifcationsController->store($request);
             }
         }
         if($playerBio->views >= 1000 && $playerBio->views < 1000000){

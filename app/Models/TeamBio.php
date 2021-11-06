@@ -17,6 +17,7 @@ class TeamBio extends Model
         "transfer_status_of_player",
         "player_position_looking_for",
         "is_to_make_quisition_in_next_twelve_month",
-        "is_assistenance_needed_in_african_transfer"
+        "is_assistenance_needed_in_african_transfer",
+        "verified"
     ];
 }

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\VerificationTokensController;
 use App\Classes\Email;
+use App\Models\TeamBio;
 use Carbon\Carbon;
 use App\Models\Verification_tokens;
 
@@ -77,6 +78,16 @@ class AuthController extends Controller
                     'message'=>'Sorry!, your account has been suspended, please contact our support team for assistance.'
                 ];
                 return response($response, 200);
+            }
+
+            if($user->user_type == 'club_official'){
+                $team = TeamBio::where('club_official_id',$user->id)->first();
+                if($team->verified == null){
+                    return $response = [
+                        'status'=>'error',
+                        'message'=>'Our Team will contact you soon to complete your registration. Thanks'
+                    ];
+                }
             }
             $response = [
                 'status'=>'success',

@@ -8,6 +8,7 @@ use App\Http\Controllers\ChatRoomsController;
 use App\Http\Controllers\EventsAttendeesController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\notificationsController;
 use App\Http\Controllers\OpportunitiesAppliedByController;
 use App\Http\Controllers\OpportunitiesController;
 use App\Http\Controllers\PlayerBioController;
@@ -112,6 +113,14 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/chatrooms/leave',[ChatRoomsController::class,'leaveRoom']);
     Route::post('/chatrooms/messages/delete',[ChatRoomsController::class,'deleteMessage']);
     Route::get('/chatrooms/{room_id}/members',[ChatRoomsController::class,'getRoomMembers']);
+
+
+    //notifications
+    Route::post('/notifications',[NotificationsController::class,'store']);
+    Route::post('/notifications/update',[NotificationsController::class,'update']);
+    Route::post('/notifications/delete',[NotificationsController::class,'destroy']);
+    Route::get('/notifications',[NotificationsController::class,'show']);
+
 
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);
 });

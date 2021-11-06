@@ -151,9 +151,13 @@ class PaymentController extends Controller
                     $subscription->update([
                         'expiry'=>$expirationFunc
                     ]);
+                    $request['message'] ='Your premium subscription has been renewed and will expire on '.date('d M, Y',strtotime($expirationFunc));
                 }else{
+
                     $expiration = Carbon::now();
                     $expirationFunc = $this->getExpiration($transaction, $user,$expiration);
+                    $request['message'] = $transaction->service_id == 1?  "basic" : "premium";
+                    $request['message'] = "Your ".$request['message']." subscription has been activated and will expre on ".date('d M, Y',strtotime($expirationFunc));
                     $subscription = Subscriptions::create([
                         'user_id'=>$transaction->user_id,
                         'service_id'=>$transaction->service_id,
@@ -162,6 +166,19 @@ class PaymentController extends Controller
                 }
                 $transaction = Transactions::where('transaction_ref','=',$query['tx_ref'])->get()->first();
                 $transaction->update(['status'=>'complete']);
+
+
+                $notifcationsController = new NotificationsController();
+
+
+                //structure notification
+
+                $request['route'] = '/';
+                $request['status'] = 'new';
+                $request['user_id'] = $transaction->user_id;
+                $request->only(['message', 'route', 'status','user_id']);
+                $notifcationsController->store($request);
+
                 return redirect('/done');
 
              }else{

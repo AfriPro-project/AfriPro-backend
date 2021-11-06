@@ -25,6 +25,7 @@ io.on('connection', client => {
   client.on('sendMessage',(message)=>{
     var roomId = parseInt(message.message.room_id);
     client.broadcast.to(roomId).emit('message', message.message);
+
   })
 
   //send message to all room uesrs
