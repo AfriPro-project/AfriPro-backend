@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\EventAttendees;
 use Illuminate\Http\Request;
 use App\Models\Events;
-use App\Models\Opportunities;
 
 class EventsController extends Controller
 {

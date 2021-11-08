@@ -48,7 +48,7 @@ class PaymentController extends Controller
                     }
                     $transactions = Transactions::latest('id')->first();
                     $id = $transactions ? $transactions->id : 0;
-                    $transaction_id = 'tx_ref_'.$id.'|'.md5($id);
+                    $transaction_id = 'tx_ref_a'.$id.'|'.md5($id);
                     $currency = Http::get('https://ipapi.co/currency/');
                     $amountToPay = Currency::convert()
                     ->from('EUR')
@@ -156,7 +156,7 @@ class PaymentController extends Controller
 
                     $expiration = Carbon::now();
                     $expirationFunc = $this->getExpiration($transaction, $user,$expiration);
-                    $request['message'] = $transaction->service_id == 1?  "basic" : "premium";
+                    $request['message'] = $transaction->service_id == 1 && $user->user_type == 'player'?  "basic" : "premium";
                     $request['message'] = "Your ".$request['message']." subscription has been activated and will expre on ".date('d M, Y',strtotime($expirationFunc));
                     $subscription = Subscriptions::create([
                         'user_id'=>$transaction->user_id,

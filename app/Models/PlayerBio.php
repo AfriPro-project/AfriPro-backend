@@ -32,6 +32,7 @@ class PlayerBio extends Model
         "pictures",
         "agent_name",
         "agent_contact",
-        "agent_contact_prefix"
+        "agent_contact_prefix",
+        "agent_country_code"
     ];
 }

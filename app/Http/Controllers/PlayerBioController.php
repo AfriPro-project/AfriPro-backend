@@ -138,6 +138,7 @@ class PlayerBioController extends Controller
             ->where('player_bios.primary_position','!=',null)
             ->where('player_bios.date_of_birth','!=',null)
             ->where('users.blocked','=','false')
+            ->where('subscriptions.expiry','>',date('Y-m-d'))
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
             ->join('users','users.id','=','subscriptions.user_id')
             ->select("users.first_name","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","player_bios.date_of_birth")
@@ -177,7 +178,8 @@ class PlayerBioController extends Controller
             ->join('player_bios','subscriptions.user_id','=','player_bios.player_id')
             ->join('users','users.id','=','subscriptions.user_id')
             ->select("users.first_name","subscriptions.service_id","subscriptions.expiry","users.last_name","player_bios.primary_position","player_bios.player_id","player_bios.pictures","player_bios.date_of_birth")
-            ->orderBy('subscriptions.id', 'desc');
+            ->orderBy('subscriptions.id', 'desc')
+            ->groupBy('subscriptions.user_id');
 
             if($request->isYoutubeLink == 'Yes'){
               $players = $players->where('player_bios.youtube_link','!=',null);
@@ -190,7 +192,10 @@ class PlayerBioController extends Controller
             $players = $players->paginate(12);
 
             foreach ($players as $player) {
-                if($player->service_id == 2){
+                //get player verified status
+                $premiumSub = Subscriptions::Where('service_id',2)
+                ->where('user_id',$player->player_id);
+                if($premiumSub){
                     $player['status'] = 'verified';
                 }else{
                     $player['status'] = 'pending';
