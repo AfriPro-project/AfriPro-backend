@@ -29,7 +29,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'agent',
         'referral_code',
         'referred_by',
-        "country_code"
+        "country_code",
+        "fcmToken"
     ];
 
     /**

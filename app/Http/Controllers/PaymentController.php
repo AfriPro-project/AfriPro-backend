@@ -173,7 +173,7 @@ class PaymentController extends Controller
 
                 //structure notification
 
-                $request['route'] = '/';
+                $request['route'] = '/subscription';
                 $request['status'] = 'new';
                 $request['user_id'] = $transaction->user_id;
                 $request->only(['message', 'route', 'status','user_id']);

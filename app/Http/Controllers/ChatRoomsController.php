@@ -19,10 +19,11 @@ class ChatRoomsController extends Controller
         $user = auth()->user();
         $request['owner'] = $user->id;
         $chatRoom = ChatRooms::create($request->all());
-        $request['room_id'] = $chatRoom->id;
+        $request['room_id'] = base64_encode($chatRoom->id.'_22352341234534');
         $this->joinChatRoom($request);
 
         //structrue message
+        $request['room_id'] = $chatRoom->id;
         $request['message'] = ' created this topic';
         $request['type'] = 'bot message';
         unset($request['room_name']);
@@ -152,11 +153,32 @@ class ChatRoomsController extends Controller
         $message['status'] = 'receiving';
         $message['time'] = date('h:i A',strtotime($message['created_at']));
 
-        return response([
+
+        //send push
+        $pushNotificationController = new PushNotifcationsController();
+        $title = $room->room_type == "oneonone" ? $user->first_name : '#'.$room->room_name.'-'.$user->first_name;
+
+        if($room->room_type == "oneonone"){
+            $chatRoomName  = $room->room_name;
+            $room['room_name'] = $user['first_name'][0].'.'.$user["last_name"];
+        }
+
+        $responseData = [
             'status'=>'sucess',
             'room'=>$room,
             'message'=>$message
-        ]);
+        ];
+
+        $data = array(
+            "title"=>$title,
+            "body"=>$message->message,
+            'image'=>"",
+            "type"=>"chat",
+            "data"=>$responseData
+        );
+
+        $pushNotificationController->sendPushToken($message->room_id, $data,'group');
+        return response($responseData);
     }
 
     //get user latest messages
@@ -171,6 +193,7 @@ class ChatRoomsController extends Controller
             $latestMessage = ChatRoomMessages::where('chat_room_messages.room_id','=',$chatRoom->room_id)
             ->leftJoin('users','chat_room_messages.sender_id','users.id')
             ->orderBy('chat_room_messages.id','desc')
+            ->select('users.*','chat_room_messages.*','chat_room_messages.id as m_id')
             ->first();
             $chatRoomName  = $chatRoom->room_name;
             if(strpos($chatRoomName,$user->email) > -1){
@@ -213,7 +236,7 @@ class ChatRoomsController extends Controller
             array_push($messages,$message);
         }
 
-        usort($messages, function($a, $b) { return $b['message']['id'] <=> $a['message']['id']; });
+        usort($messages, function($a, $b) { return $b['message']['m_id'] <=> $a['message']['m_id']; });
 
         return ['status'=>'sucess','messages'=>$messages];
     }

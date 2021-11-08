@@ -15,6 +15,7 @@ use App\Http\Controllers\PlayerBioController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TeamBioController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PushNotifcationsController;
 use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
@@ -120,6 +121,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/notifications/update',[NotificationsController::class,'update']);
     Route::post('/notifications/delete',[NotificationsController::class,'destroy']);
     Route::get('/notifications',[NotificationsController::class,'show']);
+    Route::post('/notifications/topic',[PushNotifcationsController::class,'subscribeToTopic']);
 
 
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);

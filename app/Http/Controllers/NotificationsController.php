@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Notifications;
-
+use App\Http\Controllers\PushNotifcationsController;
 class NotificationsController extends Controller
 {
     /**
@@ -26,6 +26,20 @@ class NotificationsController extends Controller
     public function store(Request $request)
     {
         $notification = Notifications::create($request->all());
+
+
+        $notification['duration'] = $this->getDuration($notification['created_at']);
+        $pushNotificationController = new PushNotifcationsController();
+        $data = array(
+            "title"=>"New Notification",
+            "body"=>$notification->message,
+            'image'=>"",
+            "type"=>"notification",
+            "data"=>$notification
+        );
+
+        $pushNotificationController->sendPushToken($notification->user_id, $data,'oneonone');
+
         return $notification;
     }
 
