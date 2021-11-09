@@ -130,6 +130,10 @@ class PaymentController extends Controller
         }else{
             $query = $request;
         }
+        if($query['transaction_id'] == null){
+            return redirect('/done');
+        }
+
         $id = $query['transaction_id'];
         $response = Http::withHeaders([
             'Authorization' => 'Bearer '.env("API_SERVER_KEY").'',
