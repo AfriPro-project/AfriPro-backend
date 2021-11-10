@@ -1,0 +1,12 @@
+.form{
+    width: 100%;
+    max-width: 400px;
+    margin:auto;
+    margin-top:200px;
+}
+
+.form h3{
+    text-align: center;
+    font-weight: 200;
+    font-size:25px;
+}

@@ -19,7 +19,6 @@ use App\Http\Controllers\PushNotifcationsController;
 use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
-use Illuminate\Auth\AuthenticationException;
 
 /*
 |--------------------------------------------------------------------------

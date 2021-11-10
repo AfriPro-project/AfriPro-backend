@@ -1,8 +1,6 @@
 const server = require('http').createServer();
 const io = require('socket.io')(server);
 
-const {get,post} = require('./utils/api');
-
 io.on('connection', client => {
   console.log('connected');
 

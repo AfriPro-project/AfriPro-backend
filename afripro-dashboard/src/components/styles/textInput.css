@@ -1,0 +1,17 @@
+input{
+    background-color: #2D2D2D !important;
+    border-radius: 7.5px !important;
+    width: 100%;
+    padding: 16px;
+    font-size: 17px;
+    border:3px solid transparent !important;
+    color: white !important;
+    font-family: Avenir;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+input:focus{
+    outline: none;
+    border: 3px solid #049256 !important;
+}
