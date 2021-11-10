@@ -14,3 +14,4 @@ yarn-error.log
 /.idea
 /.vscode
 /chat_server/node_modules
+/afripro-dashboard/node_modules
