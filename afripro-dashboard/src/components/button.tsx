@@ -1,11 +1,14 @@
 import './styles/button.css';
 interface CustomButtonOptions{
-    label:string
+    label:string,
+    onPressed?:any
 }
 
-function CustomButton({label}:CustomButtonOptions){
+function CustomButton({label,onPressed}:CustomButtonOptions){
     return (
-        <button className="button-fill">{label}</button>
+        <button className="button-fill"
+        onClick={onPressed != null ? onPressed : null}
+        >{label}</button>
     );
 }
 

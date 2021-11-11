@@ -7,7 +7,6 @@ export async function get(path:string,token?:string){
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
-        withCredentials:true
     };
     var response = await axios.get(url,config);
     return response.data;

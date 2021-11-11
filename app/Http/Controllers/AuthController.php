@@ -64,12 +64,16 @@ class AuthController extends Controller
     public function login(Request $request){
         $loginData = $request->validate([
             'email' => 'email|required',
-            'password' => 'required'
+            'password' => 'required',
+            'type'=>'string'
         ]);
 
-        // return ($loginData['email']);
         $password = md5($loginData['password']);
-        $user = User::where('email',$loginData['email'])->where('password',$password)->first();
+        $user = User::where('email',$loginData['email'])->where('password',$password);
+        if($request->type){
+            $user=$user->where('user_type','admin');
+        }
+        $user = $user->first();
         if($user){
             $token = $user->createToken('userToken')->plainTextToken;
             if($user->blocked == 'true'){

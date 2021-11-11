@@ -1,0 +1,20 @@
+.dialog{
+    background-color: #101010;
+    border-radius: 30px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    text-align: center;
+    color:white !important;
+}
+
+.dialog h3{
+    font-weight: 300;
+    font-size: 25px;
+}
+
+.dialog p{
+    max-width: 400px;
+    margin:auto;
+    margin-bottom: 20px;
+}

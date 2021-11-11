@@ -9,7 +9,6 @@ use App\Models\ChatRoomUsers;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Crypt;
 
 
 class ChatRoomsController extends Controller

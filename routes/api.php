@@ -19,6 +19,7 @@ use App\Http\Controllers\PushNotifcationsController;
 use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +122,10 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/notifications/delete',[NotificationsController::class,'destroy']);
     Route::get('/notifications',[NotificationsController::class,'show']);
     Route::post('/notifications/topic',[PushNotifcationsController::class,'subscribeToTopic']);
+
+
+    //getdashboard data
+    Route::get('/dashboard',[DashboardController::class,'fetchDashboardStat']);
 
 
     // Route::post('email/verification-notification',[EmailVerificationController::class,'sendVerificationEmail']);
