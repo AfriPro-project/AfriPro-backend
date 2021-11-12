@@ -26,23 +26,23 @@ function CustomDrawer({variant}:Props){
         },
         {
             "label":"Manage Users",
-            "path":"/manage_users"
+            "path":"/users"
         },
         {
             "label":"Manage Opportunities",
-            "path":"/manage_opportunities"
+            "path":"/opportunities"
         },
         {
             "label":"Manage Events",
-            "path":"/manage_events"
+            "path":"/events"
         },
         {
             "label":"Manage Ads",
-            "path":"/manage_ads"
+            "path":"/ads"
         },
         {
             "label":"Manage Referral Codes",
-            "path":"/manage_referral_codes"
+            "path":"/referral_codes"
         },
         {
             "label":"Messages",

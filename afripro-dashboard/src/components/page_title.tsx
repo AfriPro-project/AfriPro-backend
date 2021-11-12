@@ -7,9 +7,10 @@ type Props={
     showBackIcon:boolean,
     trailingText?:string,
     trailingButton?:boolean
+    onPressed?:any
 }
 
-function Title ({title, showBackIcon, trailingText, trailingButton}:Props){
+function Title ({title, showBackIcon, trailingText, trailingButton,onPressed}:Props){
     const navigate = useNavigate();
 
     function goBack(){
@@ -20,8 +21,8 @@ function Title ({title, showBackIcon, trailingText, trailingButton}:Props){
         sx={{
             display:"flex",
             alignItems:"center",
-            marginTop:0,
-            marginBottom:5,
+            marginTop:5,
+            marginBottom:2,
             justifyContent:"space-between"
 
         }}
@@ -43,6 +44,11 @@ function Title ({title, showBackIcon, trailingText, trailingButton}:Props){
                 <p style={{fontSize:20}}>{title}</p>
             </Box>
             {trailingText ? <Button
+            onClick={()=>{
+                if(onPressed){
+                    onPressed();
+                }
+            }}
             sx={{
                 width:140,
                 height:40,

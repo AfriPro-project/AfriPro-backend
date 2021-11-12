@@ -26,7 +26,7 @@ function Login(){
         // Update the document title using the browser API
         var redirect = sessionManager(location.pathname);
         if(redirect) navigate('/home');
-    },[]);
+    },[navigate,location]);
 
 
     async function submitLogin(e:any){

@@ -30,7 +30,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'referral_code',
         'referred_by',
         "country_code",
-        "fcmToken"
+        "fcmToken",
+        "last_active"
     ];
 
     /**

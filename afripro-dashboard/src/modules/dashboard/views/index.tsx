@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect,useState as reactUseState } from 'react';
 import { useNavigate,useLocation } from 'react-router-dom';
 import {Grid,Box} from '@mui/material'
 import DashbaordCard from '../../../components/dashboard_card';
@@ -11,10 +11,23 @@ import { useState } from '@hookstate/core';
 import {dashboardState, getData} from '../states/dashboard_state';
 
 
+
+function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height
+    };
+  }
+
+
 function Dashboard(){
     const navigate = useNavigate();
     const location = useLocation();
     const {users, profileViews, premiumSubscriptions,paidUers, normalUsers} = useState(dashboardState);
+    const [windowDimensions, setWindowDimensions] = reactUseState(getWindowDimensions());
+
+    const hasWindow = typeof window !== 'undefined';
 
 
 
@@ -25,7 +38,18 @@ function Dashboard(){
         //get dashboard data
         var userModel = getUserData();
         getData(userModel.token);
-    },[]);
+
+
+        function handleResize() {
+            setWindowDimensions(getWindowDimensions());
+        }
+
+        if (hasWindow) {
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+        }
+
+    },[navigate,location,hasWindow,setWindowDimensions]);
 
 
     const options={
@@ -108,7 +132,7 @@ function Dashboard(){
                             ],
                           }}
                         width={100}
-                        height={30}
+                        height={windowDimensions.width! > 500 ? 30 : 90}
                         options={options}
                     />
                 </Box>

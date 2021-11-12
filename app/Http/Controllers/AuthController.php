@@ -93,6 +93,8 @@ class AuthController extends Controller
                     ];
                 }
             }
+
+            $user->update(['last_active'=>Carbon::now()->toDateTimeString()]);
             $response = [
                 'status'=>'success',
                 'user'=>$user,
