@@ -1,0 +1,32 @@
+.btn{
+    background-color: #2D2D2D !important;
+    border:none !important;
+    outline:"none";
+    border-radius: 7.5px !important;
+    margin-left: 20px;
+    height: 20px !important;
+    margin-top:20px;
+    margin-left: 10px !important;
+}
+
+.btn:focus{
+    background-color: #2D2D2D !important;
+}
+
+.input{
+    width:100% !important;
+    height: 60px !important;
+    font-size: 17px !important;
+}
+
+.dropdown{
+    background-color: #2D2D2D !important;
+    color: white !important;
+}
+
+.inputContainer{
+    margin-top: 10px;
+    background-color: #2D2D2D !important;
+    height: 60px !important;
+    border-radius: 7.5px !important;
+}

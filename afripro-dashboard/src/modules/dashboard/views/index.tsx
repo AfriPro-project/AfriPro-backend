@@ -6,7 +6,7 @@ import Layout from '../../../components/layout/layout';
 import Title from '../../../components/page_title';
 import {Bar} from 'react-chartjs-2'
 //import my global states
-import {sessionManager,getUserData} from '../../authentication_module/states/authentication_state';
+import {sessionManager} from '../../authentication_module/states/authentication_state';
 import { useState } from '@hookstate/core';
 import {dashboardState, getData} from '../states/dashboard_state';
 
@@ -36,8 +36,7 @@ function Dashboard(){
         var redirect = sessionManager(location.pathname);
         if(redirect) navigate('/');
         //get dashboard data
-        var userModel = getUserData();
-        getData(userModel.token);
+        getData();
 
 
         function handleResize() {

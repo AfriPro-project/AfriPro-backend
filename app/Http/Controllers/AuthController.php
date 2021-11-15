@@ -9,12 +9,15 @@ use App\Classes\Email;
 use App\Models\TeamBio;
 use Carbon\Carbon;
 use App\Models\Verification_tokens;
+use App\Models\Subscriptions;
 
 class AuthController extends Controller
 {
     public function register(Request $request){
-
-
+        if($request->admin){
+            $request->password = '123456';
+            unset($request->admin);
+        }
         //check if user was referred by someone
         $userFound = User::where('referral_code',$request->referred_by)->first();
         if(!$userFound){
@@ -53,6 +56,7 @@ class AuthController extends Controller
             // $verificationToken = new VerificationTokensController();
             // $verificationToken->store($request,$token);
             // $this->sendVerificationEmail($request,$token);
+            // $request->admin = 'true';
             // $this->sendWelcomeEmail($request);
             return response($response, 200);
         }else{
@@ -265,6 +269,13 @@ class AuthController extends Controller
             Thank you ⚽️🤝'
         );
 
+        if($fields->admin){
+            $email_data['body'] .= 'Please find your credentials below<br/>
+            <b>Email:</b> '.$fields['email'].'<br/>
+            <b>Password:</b>12345
+            ';
+        }
+
         $mailer = new Email(
             $template,
             $email_data,
@@ -303,5 +314,42 @@ class AuthController extends Controller
             'token'=>$token
         ];
         return $response;
+    }
+
+    public function getAllUsers(){
+        $users = User::select('users.first_name','users.last_name','users.user_type','users.last_active','services.service_name','users.id as user_id','users.blocked','blocked')
+        ->where('users.id','!=',auth()->user()->id)
+        ->leftJoin('subscriptions','users.id','subscriptions.user_id')
+        ->leftJoin('services','subscriptions.service_id','services.id')
+        ->groupBy('users.id')
+        ->orderBy('users.id','desc')
+        ->get();
+
+        $results = array();
+        foreach ($users as $user) {
+            $data = array();
+            $data['name'] = $user->first_name.' '.$user->last_name;
+            $data['role']=$user->user_type;
+            $data['last_active']=$user->last_active;
+            $data['id']=$user->user_id;
+
+            $premiumSub = Subscriptions::Where('service_id',2)
+            ->where('user_id',$user->user_id)->get()->first();
+            if($premiumSub){
+                $data['subscription'] = 'Premium';
+            }else{
+                $data['subscription'] = 'Basic';
+            }
+
+            if($user->service_name==null){
+                $data['subscription'] = 'None';
+            }
+            $data['blocked'] = $user->blocked;
+
+
+            array_push($results, $data);
+        }
+
+        return $results;
     }
 }

@@ -194,7 +194,7 @@ class PlayerBioController extends Controller
             foreach ($players as $player) {
                 //get player verified status
                 $premiumSub = Subscriptions::Where('service_id',2)
-                ->where('user_id',$player->player_id);
+                ->where('user_id',$player->player_id)->first();
                 if($premiumSub){
                     $player['status'] = 'verified';
                 }else{
@@ -208,8 +208,8 @@ class PlayerBioController extends Controller
 
     function toggleBlocked(Request $request){
          $user = User::find($request->user_id);
-         $subscription = Subscriptions::where('user_id','=',$user->id)->get()->first();
-          if($subscription){
+          $subscription = Subscriptions::where('user_id','=',$user->id)->get()->first();
+          if($subscription || $user->agent == null){
             $blocked = $user->blocked == 'true' ? 'false' : 'true';
             $user->update(['blocked'=>$blocked]);
           }else{

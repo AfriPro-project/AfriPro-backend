@@ -10,9 +10,9 @@ export const dashboardState = createState({
    normalUsers:"[]"
 })
 
-export async function getData(token:string){
+export async function getData(){
     try{
-        var responseData = await get('/dashboard',token);
+        var responseData = await get('/dashboard');
         if(responseData['status']==='success'){
             var dashboardModel = Convert.toDashboardModel(JSON.stringify(responseData));
             dashboardState.users.set(dashboardModel.data.users)

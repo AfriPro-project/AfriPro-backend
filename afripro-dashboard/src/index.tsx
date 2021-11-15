@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import Login from './modules/authentication_module/views/login';
 import Dashboard  from './modules/dashboard/views';
 import Users from './modules/users_module/views';
+import AddUsers from './modules/users_module/views/add_users';
 // import Expenses from "./modules/expenses";
 // import Invoices from "./modules/invoices";
 import {
@@ -21,6 +22,7 @@ ReactDOM.render(
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<Dashboard/>}/>
       <Route path="/users" element={<Users/>}/>
+      <Route path="/users/add" element={<AddUsers/>}/>
       {/* <Route path="expenses" element={<Expenses />} />
       <Route path="invoices" element={<Invoices />} /> */}
     </Routes>

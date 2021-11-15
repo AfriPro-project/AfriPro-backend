@@ -1,7 +1,10 @@
 import axios from 'axios';
+import { getUserData } from '../modules/authentication_module/states/authentication_state';
 
-export async function get(path:string,token?:string){
-    var url = process.env.REACT_APP_API_URL+path;
+export async function get(path:string){
+    let url = process.env.REACT_APP_API_URL+path;
+    let userModel = getUserData();
+    let token = userModel.token ?? "";
     const config = {
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -12,10 +15,11 @@ export async function get(path:string,token?:string){
     return response.data;
 }
 
-export async function post(path:string,data:any,token?:string,){
+export async function post(path:string,data:any){
     var url = process.env.REACT_APP_API_URL+path;
 
-
+    let userModel = getUserData();
+    let token = userModel.token ?? "";
     const config = {
         headers: {
             'Authorization': `Bearer ${token}`,
