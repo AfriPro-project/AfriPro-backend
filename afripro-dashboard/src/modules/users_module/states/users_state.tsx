@@ -20,6 +20,7 @@ export const usersState = createState({
 
 
 export const toggleBlock=async(userId:string)=>{
+
     const {users,staticUsers} = usersState;
     let newUsers = JSON.parse(JSON.stringify(users.get()));
     let newStaticUsers = JSON.parse(JSON.stringify(staticUsers.get()));
@@ -27,6 +28,7 @@ export const toggleBlock=async(userId:string)=>{
     let index2 = newStaticUsers.findIndex((user:any)=>user.id === userId);
 
     await post('/toggle_blocked',{"user_id":userId});
+
     if(index > -1){
         newUsers[index]['blocked'] = newUsers[index]['blocked'] === 'true' ? 'false' : 'true';
         newStaticUsers[index2]['blocked'] = newUsers[index]['blocked'];
@@ -109,13 +111,10 @@ export const addUser=async()=>{
             data['subscription'] = 'None';
             data['id'] = user.id;
             data['blocked'] = user.blocked;
-            let staticUsers  = JSON.parse(JSON.stringify(usersState.staticUsers.get()));
-            staticUsers.unshift(data);
-            if(usersState.users.get().length === usersState.staticUsers.get().length){
-                let users  = JSON.parse(JSON.stringify(usersState.users.get())).push(data);
-                usersState.users.set(users);
-            }
-            usersState.users.set(staticUsers);
+            await fetchUsers();
+            usersState.search.set("");
+            usersState.currentPage.set(0);
+            usersState.rowsPerPage.set(4);
             firstName.set("");
             lastName.set("");
             emailAddress.set("");
