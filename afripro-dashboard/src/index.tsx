@@ -15,6 +15,7 @@ import {
     Routes,
     Route
 } from "react-router-dom";
+import UserInfo from './modules/users_module/views/user_info';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -23,6 +24,7 @@ ReactDOM.render(
       <Route path="/home" element={<Dashboard/>}/>
       <Route path="/users" element={<Users/>}/>
       <Route path="/users/add" element={<AddUsers/>}/>
+      <Route path="/users/:id/:userType" element={<UserInfo/>}/>
       {/* <Route path="expenses" element={<Expenses />} />
       <Route path="invoices" element={<Invoices />} /> */}
     </Routes>

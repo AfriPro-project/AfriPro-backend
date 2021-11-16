@@ -69,35 +69,37 @@ class PlayerBioController extends Controller
 
 
         $user = auth()->user();
-        if($playerBio->player_id != $request->user_id && $user->id != $playerBio->agent){
-            //check if use has already viewed profile
-            $profileView = ProfileViews::where('user_id','=',$request->user_id)->where('player_id','=',$request->player_id)->get()->first();
-            if($profileView == null){
-                ProfileViews::create([
-                    'player_id'=>$request->player_id,
-                    'user_id'=>$request->user_id
-                ]);
+        if($user->user_type != 'admin'){
+            if($playerBio->player_id != $request->user_id && $user->id != $playerBio->agent){
+                //check if use has already viewed profile
+                $profileView = ProfileViews::where('user_id','=',$request->user_id)->where('player_id','=',$request->player_id)->get()->first();
+                if($profileView == null){
+                    ProfileViews::create([
+                        'player_id'=>$request->player_id,
+                        'user_id'=>$request->user_id
+                    ]);
 
-                $notifcationsController = new NotificationsController();
+                    $notifcationsController = new NotificationsController();
 
 
-                //structure notification
-                $user = auth()->user();
-                if($user->user_type == 'player'){
-                    return;
+                    //structure notification
+                    $user = auth()->user();
+                    if($user->user_type == 'player'){
+                        return;
+                    }
+
+                    $request['message'] = $user->user_type == 'agent' ? "An agent" : "A club official";
+                    if($user->user_type == 'club_official'){
+                        $team = TeamBio::where('club_official_id',$user->id)->first();
+                        $request['message'] .=' from '.$team->name_of_team;
+                    }
+                    $request['message'] .=' viewed your profile';
+                    $request['route'] = '/profile';
+                    $request['status'] = 'new';
+                    $request['user_id'] = $playerBio->player_id;
+                    unset($request['player_id']);
+                    $notifcationsController->store($request);
                 }
-
-                $request['message'] = $user->user_type == 'agent' ? "An agent" : "A club official";
-                if($user->user_type == 'club_official'){
-                    $team = TeamBio::where('club_official_id',$user->id)->first();
-                    $request['message'] .=' from '.$team->name_of_team;
-                }
-                $request['message'] .=' viewed your profile';
-                $request['route'] = '/profile';
-                $request['status'] = 'new';
-                $request['user_id'] = $playerBio->player_id;
-                unset($request['player_id']);
-                $notifcationsController->store($request);
             }
         }
         if($playerBio->views >= 1000 && $playerBio->views < 1000000){

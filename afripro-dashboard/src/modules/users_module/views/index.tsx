@@ -63,7 +63,7 @@ function Users(){
     data = JSON.parse(JSON.stringify(data))
     data.forEach(row => {
         var id = row.id;
-        row['name'] = <Link to={`/users/${row.id}`} style={{color:"white"}}>{row.name}</Link>
+        row['name'] = <Link to={`/users/${row.id}/${row.role}`} style={{color:"white"}}>{row.name}</Link>
         row['subscription'] = <Chip label={row.subscription} sx={{color:"white",backgroundColor:"#494949",fontFamily:"Avenir"}}  />
         row['blocked'] = <GreenSwitch onChange={()=>handleChange(id)} checked={row['blocked'] === 'true' ? true : false}  />
         delete row.id;

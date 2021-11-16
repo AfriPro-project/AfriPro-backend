@@ -7,9 +7,10 @@ import preloaderState from "../../../components/preloader/preloader_state";
 
 export const usersState = createState({
     users:[],
+    userInfo:{} as any,
     staticUsers:[],
     currentPage:0,
-    rowsPerPage:4,
+    rowsPerPage:10,
     search:"",
     sortedKey:"",
     firstName:"",
@@ -114,7 +115,7 @@ export const addUser=async()=>{
             await fetchUsers();
             usersState.search.set("");
             usersState.currentPage.set(0);
-            usersState.rowsPerPage.set(4);
+            usersState.rowsPerPage.set(10);
             firstName.set("");
             lastName.set("");
             emailAddress.set("");
@@ -127,6 +128,38 @@ export const addUser=async()=>{
     }finally{
         preloaderState.loading.set(false);
     }
+}
+
+export const getUserInfo=async(userId:string,userType:string)=>{
+  try{
+    preloaderState.loading.set(true);
+    let response = await get(`/players/${userId}/1`);
+    if(response['user_type'] === 'player'){
+        response['title'] = 'Player Info';
+    }else if(response['user_type'] === 'agent'){
+        response['title'] = 'Agent Info';
+    }else{
+        response['title'] = 'Club Official Info';
+    }
+    console.log(response);
+    usersState.userInfo.set(response);
+  }catch(e){
+    console.log(e);
+    showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+ }finally{
+      preloaderState.loading.set(false);
+  }
+}
+
+export const getPlayerAgent=(dateString:string)=>{
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
 }
 
 function validateEmail(email:string) {

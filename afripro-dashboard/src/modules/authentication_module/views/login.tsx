@@ -40,6 +40,7 @@ function Login(){
 
             loading.set(true);
             let response = await post('/login',data);
+
             const userModel = Convert.toUserModel(JSON.stringify(response));
             if(userModel.status === "error"){
                 showDialog("Login Failed",response['message']);
@@ -49,6 +50,7 @@ function Login(){
                 navigate("/home");
             }
         }catch(e){
+            console.log(e);
             showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
         }finally{
             loading.set(false);

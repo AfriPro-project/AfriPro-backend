@@ -104,8 +104,8 @@ function CustomDrawer({variant}:Props){
                      key={index}
                      onClick={()=>openPage(path)}
                      sx={{
-                         color:path === location.pathname ? "white" : "rgba(255,255,255,0.5)",
-                         fontWeight:path === location.pathname ? 900 : 300,
+                         color:location.pathname.includes(path) ? "white" : "rgba(255,255,255,0.5)",
+                         fontWeight: location.pathname.includes(path) ? 900 : 300,
                          p:2,
                          '&:hover': {
                             color: "#fff",

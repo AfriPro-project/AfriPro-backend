@@ -5,15 +5,16 @@ interface TextInputInterface{
     label:string,
     onChanged:any,
     isPassword:boolean,
-    value:string
+    value:string,
+    readonly?:boolean
 }
 
-function TextInput({label,onChanged,isPassword,value}:TextInputInterface){
+function TextInput({label,onChanged,isPassword,value,readonly}:TextInputInterface){
 
     return(
         <>
             <label>{label}</label>
-            <input value={value} type={isPassword ? "password" : "text"} onChange={(event)=>onChanged(event.target.value)}/>
+            <input  readOnly={readonly === null ? false : readonly} value={value} type={isPassword ? "password" : "text"} onChange={(event)=>onChanged(event.target.value)}/>
         </>
     );
 }
