@@ -53,19 +53,19 @@ export const fetchOpportunities=async()=>{
 
 export const onImageChange = (event:any) => {
     if (event.target.files && event.target.files[0]) {
-      opportunitiesState.image.set(URL.createObjectURL(event.target.files[0]));
       if(event.target.files[0] != null){
         const name = event.target.files[0].name;
         const lastDot = name.lastIndexOf('.');
 
         const ext = name.substring(lastDot + 1);
-
-        const exts = ['png','jpg','gif'];
+        const exts = ['png','jpg','gif','jpeg'];
         if(exts.includes(ext.toLowerCase()) === false){
             showDialog("Done","Please choose a valid image");
             return;
         }
       }
+      opportunitiesState.image.set(URL.createObjectURL(event.target.files[0]));
+
       imageData = event.target.files[0];
 
     }
@@ -92,8 +92,6 @@ export const addOpportunity=async()=>{
         let response = await uploadFile(imageData,previousFile);
         serverFile = response.file.path;
     }
-
-
 
     if(serverFile == null){
         showDialog("Done","Please choose an image");

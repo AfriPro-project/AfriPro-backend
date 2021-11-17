@@ -128,7 +128,7 @@ function PlayerInfo({playerInfo}:Props){
                     }}
                     >
 
-                    <Box sx={{display:"flex",alignItems:"center"}}>{playerInfo.is_looking_for_an_angent === "true" ? <Check sx={{color:"#049256"}}/> : <Clear sx={{color:"#922F04"}}/>} <SizedBox width={5}/>looking for a club</Box>
+                    <Box sx={{display:"flex",alignItems:"center"}}>{playerInfo.is_looking_for_club === "true" ? <Check sx={{color:"#049256"}}/> : <Clear sx={{color:"#922F04"}}/>} <SizedBox width={5}/>looking for a club</Box>
 
                     <SizedBox height={10}/>
                     <Box sx={{display:"flex",alignItems:"center"}}>{playerInfo.is_looking_for_an_angent === "true" ? <Check sx={{color:"#049256"}}/> : <Clear sx={{color:"#922F04"}}/>} <SizedBox width={5}/>looking for an agent</Box>
@@ -307,7 +307,7 @@ function PlayerInfo({playerInfo}:Props){
                          <Grid item xs={12} sm={12} md={6} lg={6} sx={{p:1,marginTop:3}}>
                             <TextInput
                             label="Subscription"
-                            value={playerInfo.service_id === 2  ?  "Premium" : "Basic"}
+                            value={playerInfo.service_id === 2  ?  "Premium" : playerInfo.service_id === 1 ? "Basic" : "None"}
                             isPassword={false}
                             onChanged={(value:string)=>{
 
@@ -317,7 +317,7 @@ function PlayerInfo({playerInfo}:Props){
 
                     </Grid>
 
-                    {playerInfo.agentDetails != null ? <><Box
+                    {playerInfo.agentDetails != null || playerInfo.agent_name != null ? <><Box
                     sx={{
                         height:60,
                         backgroundColor:"#2D2D2D"
@@ -336,7 +336,7 @@ function PlayerInfo({playerInfo}:Props){
                          <Grid item xs={12} sm={12} md={6} lg={6} sx={{p:1,marginTop:3}}>
                             <TextInput
                             label="Agent Name"
-                            value={playerInfo.agentDetails.first_name+" "+playerInfo.agentDetails.last_name}
+                            value={playerInfo.agentDetails != null ? playerInfo.agentDetails.first_name+" "+playerInfo.agentDetails.last_name : playerInfo.agent_name}
                             isPassword={false}
                             onChanged={(value:string)=>{
 
@@ -347,7 +347,7 @@ function PlayerInfo({playerInfo}:Props){
                          <Grid item xs={12} sm={12} md={6} lg={6} sx={{p:1,marginTop:3}}>
                             <TextInput
                             label="Agent Number"
-                            value={playerInfo.agentDetails.phone_number_prefix+""+playerInfo.agentDetails.phone_number}
+                            value={playerInfo.agentDetails != null ? playerInfo.agentDetails.phone_number_prefix+""+playerInfo.agentDetails.phone_number : playerInfo.agent_contact_prefix+""+playerInfo.agent_contact}
                             isPassword={false}
                             onChanged={(value:string)=>{
 
