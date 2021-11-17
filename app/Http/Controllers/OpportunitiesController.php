@@ -52,7 +52,8 @@ class OpportunitiesController extends Controller
         if(auth()->user()->user_type == 'admin'){
             $submissions = OpportunitiesAppliedBy::where('opportunity_id',$opportunity->id)
             ->leftJoin('users','users.id','opportunities_applied_bies.player_id')
-            ->select('users.first_name','users.last_name','users.user_type','users.last_active','users.id as user_id','users.blocked','blocked','opportunities_applied_bies.created_at as date_applied')
+            ->leftJoin('subscriptions','subscriptions.user_id','opportunities_applied_bies.player_id')
+            ->select('users.first_name','subscriptions.service_id','users.last_name','users.user_type','users.last_active','users.id as user_id','users.blocked','blocked','opportunities_applied_bies.created_at as date_applied')
             ->get();
 
             $results = array();
@@ -71,7 +72,7 @@ class OpportunitiesController extends Controller
                     $data['subscription'] = 'Basic';
                 }
 
-                if($user->service_name==null){
+                if($user->service_id==null){
                     $data['subscription'] = 'None';
                 }
 
