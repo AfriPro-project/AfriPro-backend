@@ -1,9 +1,10 @@
-import { CheckCircle, Mail, Phone } from "@mui/icons-material";
+import { Check, CheckCircle, Close, Mail, Phone } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/system/Box";
 import SizedBox from "../../../components/sizedBox";
 import TextInput from "../../../components/textInput";
+import { activateTeamAccount } from "../states/users_state";
 
 type Props={
     teamInfo:any
@@ -83,6 +84,20 @@ function TeamInfo({teamInfo}:Props){
                 }}
                 variant="contained" color="success" startIcon={<Phone />}>
                    Call  Club Offical
+                </Button>
+
+                <SizedBox height={20}/>
+                <Button
+                onClick={()=>{
+                    if(teamInfo.verified === "true"){
+                        var value = "false";
+                    }else{
+                        value = "true";
+                    }
+                    activateTeamAccount(teamInfo.club_official_id,value);
+                }}
+                variant="outlined" color="success" startIcon={teamInfo.verified === "true" ? <Check /> : <Close />}>
+                   {teamInfo.verified === "true" ? "ACCOUNT ACTIVATED" : "ACTIVATE ACCOUNT"}
                 </Button>
 
               </Box>

@@ -5,7 +5,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/system/Box";
 import SizedBox from "../../../components/sizedBox";
 import TextInput from "../../../components/textInput";
-import {getPlayerAgent} from '../states/users_state';
+import {getPlayerAge} from '../states/users_state';
 
 type Props={
     playerInfo:any
@@ -62,7 +62,7 @@ function PlayerInfo({playerInfo}:Props){
                      >
                         {playerInfo.status === "verified" ? <CheckCircle sx={{color:"#049256",marginRight:1}}/> : null }
 
-                        <span style={{fontSize:20}}>{playerInfo.first_name+" "+playerInfo.last_name}, {getPlayerAgent(playerInfo.date_of_birth)}</span>
+                        <span style={{fontSize:20}}>{playerInfo.first_name+" "+playerInfo.last_name}, {getPlayerAge(playerInfo.date_of_birth)}</span>
                      </Box>
                     </Box>
 

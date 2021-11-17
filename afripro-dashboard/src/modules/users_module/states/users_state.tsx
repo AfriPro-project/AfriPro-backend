@@ -182,7 +182,7 @@ export const getUserInfo=async(userId:string,userType:string)=>{
   }
 }
 
-export const getPlayerAgent=(dateString:string)=>{
+export const getPlayerAge=(dateString:string)=>{
     var today = new Date();
     var birthDate = new Date(dateString);
     var age = today.getFullYear() - birthDate.getFullYear();
@@ -191,6 +191,24 @@ export const getPlayerAgent=(dateString:string)=>{
         age--;
     }
     return age;
+}
+
+export const activateTeamAccount=async(id:any,value:string)=>{
+    try{
+        preloaderState.loading.set(true);
+        let data = {
+            "verified":value,
+            "club_official_id":id
+        }
+        await post('/update_team_bio',data);
+        await getUserInfo(id,"club_official");
+    }catch(e){
+        console.log(e);
+        showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+    }finally{
+        preloaderState.loading.set(false);
+    }
+
 }
 
 function validateEmail(email:string) {
