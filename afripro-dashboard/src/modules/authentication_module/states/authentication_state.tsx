@@ -9,7 +9,7 @@ export const authenticationState = createState({
 
 export function sessionManager(path:string){
     var userData = localStorage.getItem("userData");
-    var loggedinRoutes = ['/home','/users'];
+    var loggedinRoutes = ['/home','/users','/opportunities'];
     if(userData){
         if(loggedinRoutes.indexOf(path) > -1){
             return false;

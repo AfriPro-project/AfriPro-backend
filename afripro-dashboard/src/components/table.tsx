@@ -35,7 +35,7 @@ type Props={
     label:string,
     rows:any[],
     headings:any[]
-    onSearch:any,
+    onSearch?:any,
     onPageChanged:any,
     onRowsPerPageChange:any,
     currentPage:number,
@@ -110,9 +110,11 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 function CustomTable(props:Props){
     const {label,rows,headings,search,currentPage,rowsPerPage,onSearch,onPageChanged,onRowsPerPageChange,showActionButton,menus,onMenuClicked,onSortBy}  =  props;
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [row,setRow] = useState();
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>,row:any) => {
         setAnchorEl(event.currentTarget);
+        setRow(row);
     };
 
     const handleClose = () => {
@@ -160,7 +162,7 @@ function CustomTable(props:Props){
             {menus?.map((menu)=>(
                 <ListItem key={menu} button
                 onClick={()=>{
-                    onMenuClicked(menu);
+                    onMenuClicked(menu,row);
                     handleClose();
                 }}
                 >{menu}</ListItem>
@@ -169,7 +171,8 @@ function CustomTable(props:Props){
       </Popover>
 
 
-        <TextInput
+       {onSearch != null ? <Box>
+       <TextInput
             label={label}
             value={search}
             isPassword={false}
@@ -181,6 +184,7 @@ function CustomTable(props:Props){
         <SizedBox
             height={40}
         />
+       </Box> : null}
 
         <TableContainer
         sx={{width:"100%"}}
@@ -224,7 +228,7 @@ function CustomTable(props:Props){
                          )
                      })}
 
-                    <TableCell key={Object.keys(row).length} align="right"
+                    {showActionButton  ? <TableCell key={Object.keys(row).length} align="right"
                     sx={{
                     borderBottomRightRadius: "45px",
                     borderTopRightRadius:  "45px"
@@ -232,11 +236,11 @@ function CustomTable(props:Props){
                     >
                         <IconButton
                         sx={{color:"white",width:50}}
-                        onClick={handleClick}
+                        onClick={(e)=>handleClick(e,i)}
                         >
                             <MoreVert/>
                         </IconButton>
-                    </TableCell>
+                    </TableCell> : null}
                     </TableRow>
                 ))}
                 </TableBody>

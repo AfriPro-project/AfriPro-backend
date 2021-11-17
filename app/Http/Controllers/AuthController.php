@@ -40,6 +40,10 @@ class AuthController extends Controller
         $referralCodeInstance = new ReferralCodesController();
         $referralCode = $referralCodeInstance->store($request);
 
+        if($request->picuteres == null){
+            $request['pictures'] = 'public/files/default_avatar.jpg';
+        }
+
         $request['password'] = md5($request->password);
         $user = User::create($request->all());
 

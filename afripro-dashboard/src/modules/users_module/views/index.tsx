@@ -108,8 +108,9 @@ function Users(){
                 rowsPerPage={rowsPerPage.get()}
                 showActionButton={true}
                 menus={['View Profile']}
-                onMenuClicked={(menu:string)=>{
-                    console.log(menu);
+                onMenuClicked={(menu:string,index:any)=>{
+                    let user = users.get()[index];
+                    navigate(`/users/${user['id']}/${user['role']}`);
                 }}
                 onSortBy={(key:string)=>{
                     sortUsers(key);

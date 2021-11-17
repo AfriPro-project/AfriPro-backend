@@ -33,6 +33,7 @@ class AgentBioController extends Controller
 
     public function showBioOnly(Request $request)
     {
+
         $agentBio = AgentBio::where('agent_id',$request->agent_id)->get()->first();
         return response($agentBio, 200);
     }
@@ -48,6 +49,7 @@ class AgentBioController extends Controller
     {
         $agentBio = AgentBio::where('agent_id',$request->user_id)
         ->leftJoin('users','agent_bios.agent_id','users.id')
+        ->leftJoin('subscriptions','users.id','subscriptions.user_id')
         ->first();
         return response($agentBio, 200);
     }

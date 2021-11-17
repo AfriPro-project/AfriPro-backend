@@ -30,13 +30,12 @@ class FileUploadController extends Controller
 
 
 
-        $fields = $request->validate([
-            'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpeg,gif,jpg',
-        ]);
+        // $fields = $request->validate([
+        //     'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpeg,gif,jpg',
+        // ]);
 
 
         if ($file = $request->file('file')) {
-
             $path = $file->store('public/files');
             $name = $file->getClientOriginalName();
 
@@ -55,6 +54,8 @@ class FileUploadController extends Controller
             ]);
 
         }
+
+        return ['status'=>'error','message'=>'choose a file'];
     }
 
     /**

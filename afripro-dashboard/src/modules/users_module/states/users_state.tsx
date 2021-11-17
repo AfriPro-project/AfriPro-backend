@@ -101,6 +101,21 @@ export const addUser=async()=>{
     try{
         preloaderState.loading.set(true);
         var response = await post("/register",data);
+
+        let teamData = {
+            "club_official_id":response['user']['id'],
+            "name_of_team":"",
+            "country_of_team":"",
+            "city_of_team":"",
+            "role_in_team":"",
+            "transfer_status_of_player":"",
+            "player_position_looking_for":"",
+            "is_to_make_quisition_in_next_twelve_month":"",
+            "is_assistenance_needed_in_african_transfer":""
+        };
+
+        await post("/save_team_bio",teamData);
+
         if(response['status'] === 'error'){
             showDialog("Registration Failed",response['message']);
         }else{
@@ -132,17 +147,33 @@ export const addUser=async()=>{
 
 export const getUserInfo=async(userId:string,userType:string)=>{
   try{
+    usersState.userInfo.set({});
     preloaderState.loading.set(true);
-    let response = await get(`/players/${userId}/1`);
+    let response;
+    if(userType === 'player'){
+        response = await get(`/players/${userId}/1`);
+    }else if(userType === 'agent'){
+        let data = {
+            'user_id':userId
+        }
+        response = await post(`/get_agent_bio`,data);
+    }else{
+        let data = {
+            'user_id':userId
+        }
+        response = await post(`/get_team_bio`,data);
+    }
+
     if(response['user_type'] === 'player'){
         response['title'] = 'Player Info';
     }else if(response['user_type'] === 'agent'){
         response['title'] = 'Agent Info';
     }else{
-        response['title'] = 'Club Official Info';
+        response['title'] = 'Club official Info';
     }
-    console.log(response);
+
     usersState.userInfo.set(response);
+   // console.log(response);
   }catch(e){
     console.log(e);
     showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");

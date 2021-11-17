@@ -8,7 +8,9 @@ import Title from "../../../components/page_title";
 import Preloader from "../../../components/preloader/preloader";
 import SizedBox from "../../../components/sizedBox";
 import {usersState,getUserInfo,} from '../states/users_state';
+import AgentInfo from "./agent_info";
 import PlayerInfo from "./player_info";
+import TeamInfo from "./team_info";
 
 function UserInfo(){
     const {userInfo} = useState(usersState);
@@ -18,7 +20,6 @@ function UserInfo(){
         getUserInfo(id!,userType!);
     },[id,userType])
 
-    if(Object.keys(userInfo.get()).length < 1) return <></>
     return(
         <Layout
         children={
@@ -36,9 +37,15 @@ function UserInfo(){
                  height={40}
                 />
 
+                {Object.keys(userInfo.get()).length < 1 ? null :
                 <Grid container >
                         {userInfo.get()!.user_type === "player" ? <PlayerInfo  playerInfo={userInfo.get()}/> : null}
+
+                        {userInfo.get()!.user_type === "agent" ? <AgentInfo  agentInfo={userInfo.get()}/> : null}
+
+                        {userInfo.get()!.user_type === "club_official" ? <TeamInfo  teamInfo={userInfo.get()}/> : null}
                 </Grid>
+                }
 
                </>
         }

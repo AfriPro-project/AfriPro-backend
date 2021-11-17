@@ -1,4 +1,4 @@
-input{
+input, textarea{
     background-color: #2D2D2D !important;
     border-radius: 7.5px !important;
     width: 100%;
@@ -12,6 +12,11 @@ input{
 }
 
 input:focus{
+    outline: none;
+    border: 3px solid #049256 !important;
+}
+
+textarea:focus{
     outline: none;
     border: 3px solid #049256 !important;
 }

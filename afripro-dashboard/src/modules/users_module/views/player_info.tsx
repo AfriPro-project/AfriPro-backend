@@ -1,5 +1,5 @@
-import { CheckCircle, Download, OpenInNew, Visibility } from "@mui/icons-material";
-import { Checkbox, Divider, IconButton } from "@mui/material";
+import { CheckCircle, Download, OpenInNew, Visibility,Check, Clear, Mail,Phone } from "@mui/icons-material";
+import { Button, Chip, Divider, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/system/Box";
@@ -68,6 +68,29 @@ function PlayerInfo({playerInfo}:Props){
 
                 </Box>
 
+
+                    {/* subscription info */}
+                <Box
+                    sx={{
+                        borderRadius:2,
+                        backgroundColor:"#171717",
+                        padding:3,
+                        marginTop:2
+                    }}
+                    >
+                  Subscription Info
+                  <SizedBox height={10}/>
+                  <Divider/>
+                  <SizedBox height={10}/>
+                  {playerInfo.service_id != null ?
+                  <Box>
+                      <Chip color={playerInfo.service_id === 1 ? "primary" : "success"} label={playerInfo.service_id === 1 ? "Basic" : "Premium"} />
+                       <span style={{marginLeft:10}}>Ex: {playerInfo.expiry}</span>
+                  </Box>
+                  : <p>No Subscription</p>}
+                </Box>
+
+
                 {/* SKILLS */}
                 <Box
                     sx={{
@@ -78,6 +101,7 @@ function PlayerInfo({playerInfo}:Props){
                     }}
                     >
                   Skills
+                  <SizedBox height={10}/>
                   <Divider/>
                   <SizedBox height={10}/>
                   {Object.keys(JSON.parse(playerInfo.skill_set)).map((skill)=>(
@@ -95,7 +119,7 @@ function PlayerInfo({playerInfo}:Props){
                      </Box>
                   ))}
                 </Box>
-                <Box
+                {playerInfo.agentDetails == null ?  <Box
                     sx={{
                         borderRadius:2,
                         backgroundColor:"#171717",
@@ -103,10 +127,43 @@ function PlayerInfo({playerInfo}:Props){
                         marginTop:2
                     }}
                     >
-                <Checkbox checked={playerInfo.is_looking_for_club === "true" ? true : false}  color="success" /> looking for a club <br/>
 
-                <Checkbox checked={playerInfo.is_looking_for_an_angent === "true" ? true : false}  color="success" /> looking for an agent
-                </Box>
+                    <Box sx={{display:"flex",alignItems:"center"}}>{playerInfo.is_looking_for_an_angent === "true" ? <Check sx={{color:"#049256"}}/> : <Clear sx={{color:"#922F04"}}/>} <SizedBox width={5}/>looking for a club</Box>
+
+                    <SizedBox height={10}/>
+                    <Box sx={{display:"flex",alignItems:"center"}}>{playerInfo.is_looking_for_an_angent === "true" ? <Check sx={{color:"#049256"}}/> : <Clear sx={{color:"#922F04"}}/>} <SizedBox width={5}/>looking for an agent</Box>
+
+                </Box> : null}
+                <SizedBox height={20}/>
+                <Button
+                onClick={()=>{
+                    let link = `mailto:`;
+                    if(playerInfo.agentDetails == null){
+                        link += playerInfo.email;
+                    }else{
+                        link += playerInfo.agentDetails.email;
+                    }
+                    window.open(link,'_blank');
+                }}
+                variant="contained" startIcon={<Mail />}>
+                    {playerInfo.agentDetails == null ? "E-Mail Player" : "E-Mail Agent"}
+                </Button>
+
+                <SizedBox height={20}/>
+                <Button
+                onClick={()=>{
+                    let link = `tel:`;
+                    if(playerInfo.agentDetails == null){
+                        link += playerInfo.phone_number_prefix+""+playerInfo.phone_number;
+                    }else{
+                        link += playerInfo.agentDetails.phone_number_prefix+""+playerInfo.agentDetails.phone_number;
+                    }
+                    window.open(link,'_blank');
+                }}
+                variant="contained" color="success" startIcon={<Phone />}>
+                   {playerInfo.agentDetails == null ? "Call Player" : "Call Agent"}
+                </Button>
+
                 <Box>
 
                 </Box>

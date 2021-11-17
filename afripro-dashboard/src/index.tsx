@@ -8,6 +8,9 @@ import Login from './modules/authentication_module/views/login';
 import Dashboard  from './modules/dashboard/views';
 import Users from './modules/users_module/views';
 import AddUsers from './modules/users_module/views/add_users';
+import UserInfo from './modules/users_module/views/user_info';
+import Opportunities from './modules/opportunities/views';
+
 // import Expenses from "./modules/expenses";
 // import Invoices from "./modules/invoices";
 import {
@@ -15,7 +18,8 @@ import {
     Routes,
     Route
 } from "react-router-dom";
-import UserInfo from './modules/users_module/views/user_info';
+import AddOpportunity from './modules/opportunities/views/add_opportunity';
+import Opportunity from './modules/opportunities/views/oppotunity';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -25,6 +29,9 @@ ReactDOM.render(
       <Route path="/users" element={<Users/>}/>
       <Route path="/users/add" element={<AddUsers/>}/>
       <Route path="/users/:id/:userType" element={<UserInfo/>}/>
+      <Route path="/opportunities" element={<Opportunities/>}/>
+      <Route path="/opportunities/add" element={<AddOpportunity/>}/>
+      <Route path="/opportunities/:id" element={<Opportunity/>}/>
       {/* <Route path="expenses" element={<Expenses />} />
       <Route path="invoices" element={<Invoices />} /> */}
     </Routes>
