@@ -33,6 +33,14 @@ function CustomDrawer({variant}:Props){
             "path":"/opportunities"
         },
         {
+            "label":"Verification Docs",
+            "path":"/verification_docs"
+        },
+        {
+            "label":"Scholars",
+            "path":"/scholars"
+        },
+        {
             "label":"Manage Events",
             "path":"/events"
         },

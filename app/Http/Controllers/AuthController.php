@@ -94,7 +94,7 @@ class AuthController extends Controller
 
             if($user->user_type == 'club_official'){
                 $team = TeamBio::where('club_official_id',$user->id)->first();
-                if($team->verified == null){
+                if($team->verified == null || $team->verified == "false"){
                     return $response = [
                         'status'=>'error',
                         'message'=>'Our Team will contact you soon to complete your registration. Thanks'
