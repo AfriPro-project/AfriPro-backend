@@ -59,6 +59,13 @@ class PlayerBioController extends Controller
         ->where('player_bios.player_id',$request->player_id)
         ->get()->first();
 
+        //check if player has premium subscription
+        $sub = Subscriptions::where('user_id',$request->player_id)->where('service_id',2)->get()->first();
+        if($sub){
+            $playerBio['service_id'] = 2;
+            $playerBio['expiry'] = $sub->expiry;
+        }
+
         if($playerBio->service_id == 2){
             $playerBio['status'] = 'verified';
         }else{

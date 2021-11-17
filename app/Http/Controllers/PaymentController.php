@@ -107,7 +107,7 @@ class PaymentController extends Controller
 
     }
 
-    function getExpiration($transaction,$user,$expiration){
+    public function getExpiration($transaction,$user,$expiration){
         if($transaction->service_id == 2 && $user->user_type == 'player' && $user->password != null){
             //add premium plan to player
             $expiration->addMonth(1);

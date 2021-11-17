@@ -5,7 +5,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/system/Box";
 import SizedBox from "../../../components/sizedBox";
 import TextInput from "../../../components/textInput";
-import {getPlayerAge} from '../states/users_state';
+import {getPlayerAge, cancelSubscription,addSubscription} from '../states/users_state';
 
 type Props={
     playerInfo:any
@@ -86,8 +86,41 @@ function PlayerInfo({playerInfo}:Props){
                   <Box>
                       <Chip color={playerInfo.service_id === 1 ? "primary" : "success"} label={playerInfo.service_id === 1 ? "Basic" : "Premium"} />
                        <span style={{marginLeft:10}}>Ex: {playerInfo.expiry}</span>
+                       <SizedBox height={10}/>
+                       {playerInfo.service_id === 1 ? <div onClick={()=>{
+                        addSubscription(playerInfo.player_id, 2,"player");
+                        }} style={{cursor:"pointer"}}>
+                        <Chip color={"success"} label={"Add Premium Subscription"} />
+                    </div> : null}
+
+                       <SizedBox height={10}/>
+                       <Button
+                       onClick={()=>{
+                           cancelSubscription(playerInfo.player_id, playerInfo.service_id,"player");
+                       }}
+                       variant="contained" color="error">Cancel Subscription</Button>
+
                   </Box>
-                  : <p>No Subscription</p>}
+                  : <div>
+                      <p>No Subscription</p>
+
+                      <div onClick={()=>{
+                        addSubscription(playerInfo.player_id, 2,"player");
+                        }} style={{cursor:"pointer"}}>
+                        <Chip color={"success"} label={"Add Premium Subscription"} />
+                    </div>
+                        <SizedBox height={10}/>
+                        <div onClick={()=>{
+                        addSubscription(playerInfo.player_id, 1,"player");
+                    }} style={{cursor:"pointer"}}>
+                    <Chip color={"primary"} label={"Add Basic Subscription"} />
+                    </div>
+
+                      </div>}
+
+
+
+
                 </Box>
 
 
@@ -208,6 +241,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Citzenship"
                             value={playerInfo.citizenship}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -219,6 +253,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Location"
                             value={playerInfo.current_country}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -230,6 +265,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Secondary Positon"
                             value={playerInfo.secondary_position}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -241,6 +277,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Primary Position"
                             value={playerInfo.primary_position}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -253,6 +290,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="height (cm)"
                             value={playerInfo.height_cm}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -264,6 +302,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Preferred Foot"
                             value={playerInfo.preferred_foot}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -275,6 +314,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Playing Level"
                             value={playerInfo.playing_level}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -286,6 +326,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Languages spoken"
                             value={playerInfo.languages_spoken}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -298,6 +339,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Contract Status"
                             value={playerInfo.contract_status}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -309,6 +351,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Subscription"
                             value={playerInfo.service_id === 2  ?  "Premium" : playerInfo.service_id === 1 ? "Basic" : "None"}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -338,6 +381,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Agent Name"
                             value={playerInfo.agentDetails != null ? playerInfo.agentDetails.first_name+" "+playerInfo.agentDetails.last_name : playerInfo.agent_name}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -349,6 +393,7 @@ function PlayerInfo({playerInfo}:Props){
                             label="Agent Number"
                             value={playerInfo.agentDetails != null ? playerInfo.agentDetails.phone_number_prefix+""+playerInfo.agentDetails.phone_number : playerInfo.agent_contact_prefix+""+playerInfo.agent_contact}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}

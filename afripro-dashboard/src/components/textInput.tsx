@@ -14,7 +14,7 @@ function TextInput({label,onChanged,isPassword,value,readonly}:TextInputInterfac
     return(
         <>
             <label>{label}</label>
-            <input  disabled={readonly === null ? false : true} value={value} type={isPassword ? "password" : "text"} onChange={(event)=>onChanged(event.target.value)}/>
+            <input  disabled={readonly === undefined ? false : true} value={value} type={isPassword ? "password" : "text"} onChange={(event)=>onChanged(event.target.value)}/>
         </>
     );
 }

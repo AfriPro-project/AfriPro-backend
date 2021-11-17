@@ -3,6 +3,7 @@ import { Divider, Chip, Button, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import SizedBox from "../../../components/sizedBox";
 import TextInput from "../../../components/textInput";
+import { cancelSubscription, addSubscription } from "../states/users_state";
 
 type Props={
     agentInfo:any
@@ -78,10 +79,26 @@ function AgentInfo({agentInfo}:Props){
                   <SizedBox height={10}/>
                   {agentInfo.service_id != null ?
                   <Box>
-                      <Chip color="success" label="Premium"/>
+                      <Chip color={"success"} label={"Premium"} />
                        <span style={{marginLeft:10}}>Ex: {agentInfo.expiry}</span>
+                       <SizedBox height={10}/>
+                       <Button
+                       onClick={()=>{
+                           cancelSubscription(agentInfo.agent_id, 1,"agent");
+                       }}
+                       variant="contained" color="error">Cancel Subscription</Button>
                   </Box>
-                  : <p>No Subscription</p>}
+                  : <div>
+                      <p>No Subscription</p>
+
+                      <div onClick={()=>{
+                            addSubscription(agentInfo.agent_id, 1,"agent");
+                        }} style={{cursor:"pointer"}}>
+                        <Chip color={"success"} label={"Add Premium Subscription"} />
+                     </div>
+
+
+                      </div>}
                 </Box>
 
                 <SizedBox height={20}/>
@@ -130,6 +147,7 @@ function AgentInfo({agentInfo}:Props){
                             label="Country Licensed in "
                             value={agentInfo.country_license}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -141,6 +159,7 @@ function AgentInfo({agentInfo}:Props){
                             label="Country Located in "
                             value={agentInfo.country_located}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -152,6 +171,7 @@ function AgentInfo({agentInfo}:Props){
                             label="Certified by Fifa "
                             value={agentInfo.certified_by_fifa}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -163,6 +183,7 @@ function AgentInfo({agentInfo}:Props){
                             label="Has mandate for players "
                             value={agentInfo.is_mandate_for_players}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -174,6 +195,7 @@ function AgentInfo({agentInfo}:Props){
                             label="Number of players to register "
                             value={agentInfo.number_of_players_to_register}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -185,6 +207,7 @@ function AgentInfo({agentInfo}:Props){
                             label="Phone Number "
                             value={agentInfo.phone_number_prefix+""+agentInfo.phone_number}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}

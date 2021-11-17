@@ -128,6 +128,8 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get('/dashboard',[DashboardController::class,'fetchDashboardStat'])->middleware('admin');
     Route::get('/users',[AuthController::class,'getAllUsers'])->middleware('admin');
     Route::get('/opportunities/admin',[OpportunitiesController::class,'getAdminOpportunities'])->middleware('admin');
+    Route::post('/subscriptions/cancel',[SubscriptionController::class,'cancelSubscription'])->middleware('admin');
+    Route::post('/subscriptions',[SubscriptionController::class,'subscribeUser'])->middleware('admin');
 
     Route::get('header_token', function() {
         return response()->json(['status' =>'error', 'msg' => 'Unathorized as Admin']);

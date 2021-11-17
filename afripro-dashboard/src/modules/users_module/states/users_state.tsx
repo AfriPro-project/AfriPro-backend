@@ -210,6 +210,50 @@ export const activateTeamAccount=async(id:any,value:string)=>{
     }
 
 }
+export const cancelSubscription=async(user_id:any,service_id:any,userType:string)=>{
+    try{
+        preloaderState.loading.set(true);
+        let data = {
+            "user_id":user_id,
+            "service_id":service_id,
+            'user_type':userType
+        }
+        await post('/subscriptions/cancel',data);
+        await getUserInfo(user_id,userType);
+        await fetchUsers();
+        usersState.search.set("");
+        usersState.currentPage.set(0);
+        usersState.rowsPerPage.set(10);
+    }catch(e){
+        console.log(e);
+        showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+    }finally{
+        preloaderState.loading.set(false);
+    }
+}
+
+
+export const addSubscription=async(user_id:any,service_id:any,userType:string)=>{
+    try{
+        preloaderState.loading.set(true);
+        let data = {
+            "user_id":user_id,
+            "service_id":service_id,
+            'user_type':userType
+        }
+        await post('/subscriptions',data);
+        await getUserInfo(user_id,userType);
+        await fetchUsers();
+        usersState.search.set("");
+        usersState.currentPage.set(0);
+        usersState.rowsPerPage.set(10);
+    }catch(e){
+        console.log(e);
+        showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+    }finally{
+        preloaderState.loading.set(false);
+    }
+}
 
 function validateEmail(email:string) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

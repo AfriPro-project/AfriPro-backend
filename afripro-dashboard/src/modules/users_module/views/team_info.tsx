@@ -124,6 +124,7 @@ function TeamInfo({teamInfo}:Props){
                             label="Name of Team "
                             value={teamInfo.name_of_team}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -135,6 +136,7 @@ function TeamInfo({teamInfo}:Props){
                             label="Country  "
                             value={teamInfo.country_of_team}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -146,6 +148,7 @@ function TeamInfo({teamInfo}:Props){
                             label="City  "
                             value={teamInfo.city_of_team}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -157,6 +160,7 @@ function TeamInfo({teamInfo}:Props){
                             label="Need assistance in african transfer "
                             value={teamInfo.is_assistenance_needed_in_african_transfer}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -168,6 +172,7 @@ function TeamInfo({teamInfo}:Props){
                             label="Team is acquisition within the next 12 months? "
                             value={teamInfo.is_to_make_quisition_in_next_twelve_month}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -179,6 +184,7 @@ function TeamInfo({teamInfo}:Props){
                             label="Positions looking for "
                             value={teamInfo.player_position_looking_for}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -190,6 +196,7 @@ function TeamInfo({teamInfo}:Props){
                             label="Transfer status of player looking for "
                             value={teamInfo.transfer_status_of_player}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
@@ -201,6 +208,7 @@ function TeamInfo({teamInfo}:Props){
                             label="Role in team "
                             value={teamInfo.role_in_team}
                             isPassword={false}
+                            readonly={true}
                             onChanged={(value:string)=>{
 
                             }}
