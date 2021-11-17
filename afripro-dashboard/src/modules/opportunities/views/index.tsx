@@ -13,7 +13,7 @@ import CustomDialog from "../../../components/dialog/dialog";
 function Opportunities(){
     const navigate = useNavigate();
     const location = useLocation();
-    const {opportunities,currentPage,rowsPerPage,search} = useState(opportunitiesState);
+    const {opportunities,currentPage,rowsPerPage,search,title, description,image,opportunityInfo} = useState(opportunitiesState);
 
 
     useEffect(()=>{
@@ -46,7 +46,15 @@ function Opportunities(){
                 showBackIcon={false}
                 trailingButton={true}
                 trailingText="Add New"
-                onPressed={()=>navigate('/opportunities/add')}
+                onPressed={()=>
+                    {
+                        title.set("");
+                        image.set("");
+                        description.set("");
+                        opportunityInfo.set({});
+                        navigate('/opportunities/add')
+                    }
+                }
                 />
 
                 <SizedBox

@@ -22,7 +22,6 @@ export const opportunitiesState = createState({
     description:"",
     image:"",
     submissions:[],
-    staticSubmissions:[]
  })
 
  export const filterOpportunities=(value:string)=>{
@@ -83,14 +82,17 @@ export const addOpportunity=async()=>{
         return;
     }
 
-    if(imageData != null){
-        let response = await uploadFile(imageData,"");
-        var serverFile = response.file.path;
-    }
 
     if(Object.keys(opportunitiesState.opportunityInfo.get()).length > 0){
-        serverFile = opportunitiesState.opportunityInfo.get().image!;
+        var serverFile = opportunitiesState.opportunityInfo.get().image!;
     }
+
+    if(imageData != null){
+        let previousFile = Object.keys(opportunitiesState.opportunityInfo.get()).length > 0 ? opportunitiesState.opportunityInfo.get().image : "";
+        let response = await uploadFile(imageData,previousFile);
+        serverFile = response.file.path;
+    }
+
 
 
     if(serverFile == null){
@@ -165,13 +167,24 @@ export const deleteOpportunity=async(id:string)=>{
 
 
 export const fetchOpportunity=async(id:string)=>{
-    const {opportunityInfo, title, description,image,submissions,staticSubmissions}= opportunitiesState;
+   try{
+    preloaderState.loading.set(true);
+    const {opportunityInfo, title, description,image,submissions}= opportunitiesState;
+    opportunityInfo.set("");
+    title.set("");
+    description.set("");
+    image.set("");
+    submissions.set([]);
     let res = await get(`/opportunities/${id}/1`);
     opportunityInfo.set(res);
     title.set(res.title);
     description.set(res.description);
     submissions.set(res.submissions);
-    staticSubmissions.set(res.staticSubmissions);
     image.set(`${process.env.REACT_APP_BACKEND_APP_URL}${res.image.replace('public','storage')}`);
-    console.log(res);
+   }catch(e){
+    console.log(e);
+    showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+   }finally{
+    preloaderState.loading.set(false);
+   }
 }
