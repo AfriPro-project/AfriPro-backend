@@ -47,7 +47,7 @@ export const sortOpportunities=(key:any)=>{
 
 export const fetchOpportunities=async()=>{
     let response = await get('/opportunities/admin');
-    opportunitiesState.opportunities.set(response);
+    if(opportunitiesState.search.get().length < 1) opportunitiesState.opportunities.set(response);
     opportunitiesState.staticOpporunities.set(response);
 }
 

@@ -20,8 +20,8 @@ function Opportunities(){
         let redirect = sessionManager(location.pathname);
         if(redirect) navigate('/');
 
-        if(opportunities.get().length < 1) fetchOpportunities();
-    },[navigate,location,opportunities])
+        fetchOpportunities();
+    },[navigate,location])
 
     function getRows(data:any[]){
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\EventAttendees;
 use Illuminate\Http\Request;
 use App\Models\Events;
+use Illuminate\Support\Facades\DB;
+
 
 class EventsController extends Controller
 {
@@ -68,9 +70,11 @@ class EventsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+      $event = Events::find($request->id);
+      $event->update($request->all());
+      return ["status"=>"success","message"=>"done"];
     }
 
     /**
@@ -79,8 +83,25 @@ class EventsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+      $event = Events::find($request->id);
+      $event->delete();
+      return ["status"=>"success","message"=>"done"];
     }
+
+    public function fetchEventsForAdmin()
+    {
+       $events = Events::select('events.title',DB::raw('date_format(events.start_date_time, \'%d-%b-%Y %h:%i\') as start_date_time'),'events.id',DB::raw('count(event_attendees.id) as attendees'))
+       ->leftJoin('event_attendees','events.id','event_attendees.event_id')
+       ->where('events.id','!=',0)
+       ->orderBy('events.id','desc')
+       ->groupBy('events.id')
+       ->get();
+
+
+       return $events;
+    }
+
+
 }

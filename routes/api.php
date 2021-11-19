@@ -91,13 +91,14 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
 
     Route::get('/players/{player_id}/{user_id}',[PlayerBioController::class,'show']);
     Route::post('/events',[EventsController::class,'store']);
-    Route::get('/events',[EventsController::class,'showAll']);
     Route::get('/events/{id}',[EventsController::class,'show']);
     Route::post('/attend_event',[EventsAttendeesController::class,'store']);
 
 
-    Route::post('/adverts',[AdvertsController::class,'store']);
+
     Route::get('/adverts',[AdvertsController::class,'showAll']);
+    Route::post('/adverts_update_clicks',[AdvertsController::class,'increaseClicks']);
+    Route::get('/events',[EventsController::class,'showAll']);
 
 
     Route::post('/upload_file',[FileUploadController::class,'store']);
@@ -124,12 +125,29 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/notifications/topic',[PushNotifcationsController::class,'subscribeToTopic']);
 
 
-    //getdashboard data
+    //admin routes
     Route::get('/dashboard',[DashboardController::class,'fetchDashboardStat'])->middleware('admin');
     Route::get('/users',[AuthController::class,'getAllUsers'])->middleware('admin');
     Route::get('/opportunities/admin',[OpportunitiesController::class,'getAdminOpportunities'])->middleware('admin');
     Route::post('/subscriptions/cancel',[SubscriptionController::class,'cancelSubscription'])->middleware('admin');
     Route::post('/subscriptions',[SubscriptionController::class,'subscribeUser'])->middleware('admin');
+    Route::get('/verification_docs',[VerificationDocsController::class,'fetchVerificationDocs'])->middleware('admin');
+    Route::post('/verification_docs/reject',[VerificationDocsController::class,'destroy'])->middleware('admin');
+    Route::post('/verification_docs/verify',[VerificationDocsController::class,'verifyDocs'])->middleware('admin');
+    Route::get('/verification_docs/{id}',[VerificationDocsController::class,'getVerificationDoc'])->middleware('admin');
+    Route::get('/scholars',[ScholarsController::class,'getAll'])->middleware('admin');
+    Route::post('/scholars/delete',[ScholarsController::class,'delete'])->middleware('admin');
+    Route::get('/events_admin',[EventsController::class,'fetchEventsForAdmin'])->middleware('admin');
+    Route::post('/events_delete',[EventsController::class,'destroy'])->middleware('admin');
+    Route::post('/events_update',[EventsController::class,'update'])->middleware('admin');
+
+    Route::post('/adverts_update',[AdvertsController::class,'update'])->middleware('admin');;
+    Route::post('/adverts_delete',[AdvertsController::class,'destroy'])->middleware('admin');;
+    Route::get('/adverts/{id}',[AdvertsController::class,'show'])->middleware('admin');;
+    Route::post('/adverts',[AdvertsController::class,'store'])->middleware('admin');;
+    Route::get('/adverts_admin',[AdvertsController::class,'fetchAdsAdmin'])->middleware('admin');;
+
+
 
     Route::get('header_token', function() {
         return response()->json(['status' =>'error', 'msg' => 'Unathorized as Admin']);

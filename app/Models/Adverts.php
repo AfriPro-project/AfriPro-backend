@@ -14,6 +14,8 @@ class Adverts extends Model
         "sponsor_name",
         "ad_url",
         "expiry_date",
-        "rank"
+        "rank",
+        "clicks",
+        "status"
     ];
 }

@@ -42,7 +42,7 @@ export const fetchUsers=async ()=>{
     const {users,staticUsers} = usersState;
   let response = await get('/users');
   staticUsers.set(response);
-  users.set(response);
+  if(usersState.search.get().length < 1) users.set(response);
 }
 
  export const filterUsers=(value:string)=>{

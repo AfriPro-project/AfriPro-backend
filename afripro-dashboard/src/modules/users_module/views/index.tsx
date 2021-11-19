@@ -30,8 +30,8 @@ function Users(){
         let redirect = sessionManager(location.pathname);
         if(redirect) navigate('/');
 
-        if(users.get().length < 1) fetchUsers();
-    },[navigate,location,users])
+        fetchUsers();
+    },[navigate,location])
 
 
 

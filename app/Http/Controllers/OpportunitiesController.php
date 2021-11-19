@@ -53,6 +53,7 @@ class OpportunitiesController extends Controller
             $submissions = OpportunitiesAppliedBy::where('opportunity_id',$opportunity->id)
             ->leftJoin('users','users.id','opportunities_applied_bies.player_id')
             ->leftJoin('subscriptions','subscriptions.user_id','opportunities_applied_bies.player_id')
+            ->groupBy('users.id')
             ->select('users.first_name','subscriptions.service_id','users.last_name','users.user_type','users.last_active','users.id as user_id','users.blocked','blocked','opportunities_applied_bies.created_at as date_applied')
             ->get();
 

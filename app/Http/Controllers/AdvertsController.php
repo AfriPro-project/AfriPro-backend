@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Adverts;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 class AdvertsController extends Controller
 {
     /**
@@ -12,9 +14,10 @@ class AdvertsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function show(Request $request)
     {
-        //
+        $advert = Adverts::find($request->id);
+        return $advert;
     }
 
     /**
@@ -42,7 +45,7 @@ class AdvertsController extends Controller
     public function showAll(Request $request)
     {
         $today = Carbon::now();;
-       $adverts = Adverts::where('expiry_date','>',$today)->orderBy('rank','desc')->paginate(5);
+       $adverts = Adverts::where('expiry_date','>',$today)->where('status','active')->orderBy('rank','desc')->paginate(5);
        return $adverts;
     }
 
@@ -53,9 +56,18 @@ class AdvertsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $advert = Adverts::find($request->id);
+        $advert->update($request->all());
+        return ["status"=>"success","message"=>"done"];
+    }
+
+    public function increaseClicks(Request $request)
+    {
+        $advert = Adverts::find($request->id);
+        $advert->update(['clicks'=>($advert->clicks + 1)]);
+        return ["status"=>"success","message"=>"done"];
     }
 
     /**
@@ -64,8 +76,18 @@ class AdvertsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+      $advert = Adverts::find($request->id);
+      $advert->delete();
+      return ["status"=>"success","message"=>"done"];
+    }
+
+    public function fetchAdsAdmin()
+    {
+       $ads = Adverts::select("sponsor_name","title",DB::raw('date_format(created_at, \'%d-%b-%Y\') as date_added'),"ad_url","clicks","rank","status","id")
+       ->orderBy('id','desc')
+       ->get();
+       return $ads;
     }
 }
