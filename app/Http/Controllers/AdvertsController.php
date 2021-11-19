@@ -45,7 +45,7 @@ class AdvertsController extends Controller
     public function showAll(Request $request)
     {
         $today = Carbon::now();;
-       $adverts = Adverts::where('expiry_date','>',$today)->where('status','active')->orderBy('rank','desc')->paginate(5);
+       $adverts = Adverts::where('expiry_date','>=',$today)->where('status','active')->orderBy('rank','asc')->paginate(5);
        return $adverts;
     }
 

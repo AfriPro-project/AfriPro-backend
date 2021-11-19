@@ -200,7 +200,7 @@ export const addAdvert=async()=>{
      }
      adInfo.set(res);
      title.set(res.title);
-     expiryDate.set(getDateTime());
+     expiryDate.set(`${res.expiry_date}T00:00`);
      adUrl.set(res.ad_url);
      sponsorName.set(res.sponsor_name);
      title.set(res.title);
