@@ -11,7 +11,6 @@ import { adsState, deleteAd, fetchAds, filterAds, sortAds } from "../states/adve
 import {useState} from '@hookstate/core';
 import Chip from "@mui/material/Chip";
 import { getDateTime } from "../../events/states/events_state";
-import AddInfo from "./ad_info";
 
 function Adverts(){
     const navigate = useNavigate();

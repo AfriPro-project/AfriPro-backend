@@ -60,7 +60,7 @@ export const onImageChange = (event:any) => {
         const ext = name.substring(lastDot + 1);
         const exts = ['png','jpg','gif','jpeg'];
         if(exts.includes(ext.toLowerCase()) === false){
-            showDialog("Done","Please choose a valid image");
+            showDialog("Attention","Please choose a valid image");
             return;
         }
       }
@@ -78,7 +78,7 @@ export const addOpportunity=async()=>{
     const {title,description} = opportunitiesState;
 
     if(title.get().trim().length < 1 || description.get().trim().length < 30){
-        showDialog("Done","Please fill the form correctly");
+        showDialog("Attention","Please fill the form correctly");
         return;
     }
 
@@ -94,7 +94,7 @@ export const addOpportunity=async()=>{
     }
 
     if(serverFile == null){
-        showDialog("Done","Please choose an image");
+        showDialog("Attention","Please choose an image");
         return;
     }
 
