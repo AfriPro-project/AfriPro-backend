@@ -20,6 +20,7 @@ use App\Http\Controllers\ScholarsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReferralCodesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -141,11 +142,12 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/events_delete',[EventsController::class,'destroy'])->middleware('admin');
     Route::post('/events_update',[EventsController::class,'update'])->middleware('admin');
 
-    Route::post('/adverts_update',[AdvertsController::class,'update'])->middleware('admin');;
-    Route::post('/adverts_delete',[AdvertsController::class,'destroy'])->middleware('admin');;
-    Route::get('/adverts/{id}',[AdvertsController::class,'show'])->middleware('admin');;
-    Route::post('/adverts',[AdvertsController::class,'store'])->middleware('admin');;
-    Route::get('/adverts_admin',[AdvertsController::class,'fetchAdsAdmin'])->middleware('admin');;
+    Route::post('/adverts_update',[AdvertsController::class,'update'])->middleware('admin');
+    Route::post('/adverts_delete',[AdvertsController::class,'destroy'])->middleware('admin');
+    Route::get('/adverts/{id}',[AdvertsController::class,'show'])->middleware('admin');
+    Route::post('/adverts',[AdvertsController::class,'store'])->middleware('admin');
+    Route::get('/adverts_admin',[AdvertsController::class,'fetchAdsAdmin'])->middleware('admin');
+    Route::get('/referral_codes',[ReferralCodesController::class,'index'])->middleware('admin');
 
 
 

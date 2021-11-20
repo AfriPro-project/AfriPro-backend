@@ -29,6 +29,7 @@ import EventInfo from './modules/events/views/event_info';
 import Adverts from './modules/adverts/views';
 import AddAdvert from './modules/adverts/views/ad_ads';
 import AddInfo from './modules/adverts/views/ad_info';
+import ReferralCodes from './modules/referral_codes/views';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -50,6 +51,7 @@ ReactDOM.render(
       <Route path="/ads" element={<Adverts/>}/>
       <Route path="/ads/add" element={<AddAdvert/>}/>
       <Route path="/ads/:id" element={<AddInfo/>}/>
+      <Route path="/referral_codes" element={<ReferralCodes/>}/>
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')
