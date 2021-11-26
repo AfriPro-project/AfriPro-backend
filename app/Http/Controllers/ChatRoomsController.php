@@ -280,20 +280,25 @@ class ChatRoomsController extends Controller
 
         //update all messages to read
         $user = auth()->user();
-        $messages = DB::update('UPDATE chat_room_messages SET `read`=CONCAT(`read`,",'.$user->email.'") WHERE  `room_id` = "'.$request->room_id.'" and `read` not like "%'.$user->email.'%"');
+        if($user->user_type != 'admin'){
+            $messages = DB::update('UPDATE chat_room_messages SET `read`=CONCAT(`read`,",'.$user->email.'") WHERE  `room_id` = "'.$request->room_id.'" and `read` not like "%'.$user->email.'%"');
+        }
 
 
         //get all mesages
         $messages = ChatRoomMessages::where('room_id','=',$request->room_id)
         ->leftJoin('users','chat_room_messages.sender_id','users.id')
-        ->select('chat_room_messages.message','chat_room_messages.sender_id','chat_room_messages.type','chat_room_messages.image','chat_room_messages.created_at','chat_room_messages.id',"users.first_name","users.last_name","chat_room_messages.read")
+        ->select('chat_room_messages.message','chat_room_messages.sender_id','chat_room_messages.type','chat_room_messages.image','chat_room_messages.created_at','chat_room_messages.id',"users.first_name",'users.user_type',"users.last_name","chat_room_messages.read")
         ->orderBy('chat_room_messages.created_at','desc');
+
 
         //get room
         $room = ChatRooms::where('chat_rooms.id','=',$request->room_id)
-        ->leftJoin('chat_room_users','chat_rooms.id','chat_room_users.room_id')
-        ->where('chat_room_users.user_id',$user->id)
-        ->first();
+        ->leftJoin('chat_room_users','chat_rooms.id','chat_room_users.room_id');
+        if($user->user_type != 'admin'){
+            $room = $room->where('chat_room_users.user_id',$user->id);
+        }
+        $room=$room->first();
 
         if($room == null){
             return ['status'=>'failed','messages'=>'user not in room'];
@@ -309,7 +314,12 @@ class ChatRoomsController extends Controller
           $messages=$messages->select('player_bios.pictures');
         }
 
-        $messages = $messages->paginate(20);
+        if($user->user_type != 'admin'){
+            $messages = $messages->paginate(20);
+        }else{
+            $messages = $messages->get();
+        }
+
 
         foreach ($messages as $message) {
             $message['sent'] = $this->getLastSent(date('Y-m-d',strtotime($message['created_at'])));
@@ -372,5 +382,23 @@ class ChatRoomsController extends Controller
         ->leftJoin('player_bios','chat_room_users.user_id','player_bios.player_id')
         ->get();
         return $members;
+    }
+
+    function allMessages(Request $request){
+        $messages = ChatRooms::where('chat_rooms.room_type',$request->room_type)
+        ->select('chat_rooms.room_name as chat',DB::raw('date_format(chat_room_messages.updated_at, \'%d-%b-%Y\') as last_updated'),'chat_rooms.id')
+        ->leftJoin('chat_room_messages','chat_rooms.id','chat_room_messages.room_id')
+        ->orderBy('chat_room_messages.id','desc')
+        ->groupBy('chat_rooms.id')->get();
+
+        if($request->room_type != 'group'){
+            foreach ($messages as $message) {
+                $users = explode('|',$message['chat']);
+                $user = User::where('email',$users[0])->get()->first();
+                $user2 = User::where('email',$users[1])->get()->first();
+                $message['chat'] = $user['first_name'][0].'.'.$user['last_name'].' & '.$user2['first_name'][0].'.'.$user2['last_name'];
+            }
+        }
+        return $messages;
     }
 }

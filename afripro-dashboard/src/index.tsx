@@ -30,11 +30,17 @@ import Adverts from './modules/adverts/views';
 import AddAdvert from './modules/adverts/views/ad_ads';
 import AddInfo from './modules/adverts/views/ad_info';
 import ReferralCodes from './modules/referral_codes/views';
+import Messages from './modules/messages/views';
+import MessageInfo from './modules/messages/views/message';
+import ChatForum from './modules/chat_forum/views';
+import SettingsPage from './modules/authentication_module/views/settings';
+import NotFoundPage from './modules/errorPages/views/404';
 
 ReactDOM.render(
   <BrowserRouter>
+    {localStorage.getItem("userData") ?
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Dashboard/>}/>
       <Route path="/home" element={<Dashboard/>}/>
       <Route path="/users" element={<Users/>}/>
       <Route path="/users/add" element={<AddUsers/>}/>
@@ -52,7 +58,18 @@ ReactDOM.render(
       <Route path="/ads/add" element={<AddAdvert/>}/>
       <Route path="/ads/:id" element={<AddInfo/>}/>
       <Route path="/referral_codes" element={<ReferralCodes/>}/>
+      <Route path="/messages" element={<Messages/>}/>
+      <Route path="/messages/:id/:chat" element={<MessageInfo/>}/>
+      <Route path="/chat_forum" element={<ChatForum/>}/>
+      <Route path="/settings" element={<SettingsPage/>}/>
+      <Route path='*' element={<NotFoundPage/>} />
     </Routes>
+    :
+    <Routes>
+    <Route path="/" element={<Login />} />
+     <Route path='*' element={<NotFoundPage/>} />
+    </Routes>
+    }
   </BrowserRouter>,
   document.getElementById('root')
 );

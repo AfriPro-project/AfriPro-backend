@@ -41,7 +41,7 @@ class SubscriptionController extends Controller
     }
 
 
-    function subscribeUser(Request $request){
+    public function subscribeUser(Request $request){
         $user = User::find($request->user_id);
 
         unset($request->user_type);
@@ -60,7 +60,11 @@ class SubscriptionController extends Controller
         $notifcationsController = new NotificationsController();
 
        if($request->service_id == 2 || $user->user_type == 'agent'){
-        $request['message'] ='Your premium subscription has been activated and will expire on '.date('d M, Y',strtotime($expirationFunc));
+         if($request->code_type){
+            $request['message'] ='The '.$request->code_type.' promo has been activated on your account and will expire on '.date('d M, Y',strtotime($expirationFunc));
+         }else{
+            $request['message'] ='Your premium subscription has been activated and will expire on '.date('d M, Y',strtotime($expirationFunc));
+         }
        }else{
         $request['message'] = "Your Basic subscription has been activated and will expre on ".date('d M, Y',strtotime($expirationFunc));
        }

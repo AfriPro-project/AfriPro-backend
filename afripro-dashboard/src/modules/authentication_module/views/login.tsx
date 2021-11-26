@@ -40,14 +40,13 @@ function Login(){
 
             loading.set(true);
             let response = await post('/login',data);
-
             const userModel = Convert.toUserModel(JSON.stringify(response));
             if(userModel.status === "error"){
                 showDialog("Login Failed",response['message']);
             }else{
                 userData.set(JSON.stringify(response));
                 localStorage.setItem('userData',JSON.stringify(response));
-                navigate("/home");
+                window.open("/home","_self");
             }
         }catch(e){
             console.log(e);

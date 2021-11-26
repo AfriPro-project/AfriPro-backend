@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\VerificationTokensController;
 use App\Classes\Email;
+use App\Models\ReferralCodes;
 use App\Models\TeamBio;
 use Carbon\Carbon;
 use App\Models\Verification_tokens;
@@ -18,11 +19,20 @@ class AuthController extends Controller
             $request->password = '123456';
             unset($request->admin);
         }
+
+        //get early bird signup code
+        $code = '';
+        if(strtoupper($request->referred_by) == 'EARLYBIRD'){
+            $code = $request->referred_by;
+        }
+
         //check if user was referred by someone
-        $userFound = User::where('referral_code',$request->referred_by)->first();
+        $userFound = ReferralCodes::where('referral_code',$request->referred_by)->first();
         if(!$userFound){
             $request->referred_by = '';
         }
+
+
 
         //check if user exist
         if($request->email  !=''){
@@ -57,11 +67,25 @@ class AuthController extends Controller
                 'token'=>$token
             ];
 
+
+
+            //activate early bird signup for user
+            if($code != '' && $user->user_type != 'club_official'){
+                $referralCode = new ReferralCodesController();
+                $request['user_id'] = $user->id;
+                $request['service_id'] = $user->user_type == 'agent' ? 1 : 2;
+                $request['code_type'] = 'Early Bird';
+                $request['email'] = $user->email;
+                $referralCode->earlyBirdSignup($request);
+            }
+
+
             // $verificationToken = new VerificationTokensController();
             // $verificationToken->store($request,$token);
             // $this->sendVerificationEmail($request,$token);
             // $request->admin = 'true';
             // $this->sendWelcomeEmail($request);
+
             return response($response, 200);
         }else{
             return $user;

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\promotionUsers;
 use App\Models\ReferralCodes;
+use App\Models\Subscriptions;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class ReferralCodesController extends Controller
 {
@@ -85,5 +88,15 @@ class ReferralCodesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function earlyBirdSignup(Request $request){
+        $user = PromotionUsers::where('email',$request->email)->get()->first();
+        if($user){
+            $subscription = new SubscriptionController();
+            $request->only(['user_id', 'service_id','code_type']);
+            $subscription->subscribeUser($request);
+            $user->delete();
+        }
     }
 }

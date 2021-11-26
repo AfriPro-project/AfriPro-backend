@@ -224,6 +224,7 @@ export const cancelSubscription=async(user_id:any,service_id:any,userType:string
         usersState.search.set("");
         usersState.currentPage.set(0);
         usersState.rowsPerPage.set(10);
+
     }catch(e){
         console.log(e);
         showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");

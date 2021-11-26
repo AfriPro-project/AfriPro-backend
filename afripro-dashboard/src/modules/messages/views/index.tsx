@@ -1,3 +1,4 @@
+import { useState } from "@hookstate/core";
 import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import CustomDialog from "../../../components/dialog/dialog";
@@ -7,32 +8,33 @@ import Preloader from "../../../components/preloader/preloader";
 import SizedBox from "../../../components/sizedBox";
 import CustomTable from "../../../components/table";
 import { sessionManager } from "../../authentication_module/states/authentication_state";
-import { referralCodesState, fetchReferralCodes, filterCodes, sortCodes } from "../states/referral_codes_state";
-import {useState} from '@hookstate/core';
+import { fetchmessages, filterMessages, messagesState, sortMessages } from "../states/messages_state";
 
-function ReferralCodes(){
+function Messages(){
+
     const navigate = useNavigate();
     const location = useLocation();
-    const {search, referralCodes,currentPage, rowsPerPage} = useState(referralCodesState);
+    const {messages,currentPage,rowsPerPage,search} = useState(messagesState);
+
 
     useEffect(()=>{
         let redirect = sessionManager(location.pathname);
         if(redirect) navigate('/');
 
-        fetchReferralCodes();
+        fetchmessages();
     },[navigate,location])
 
+
     function getRows(data:any[]){
+
         data = JSON.parse(JSON.stringify(data))
         data.forEach(row => {
-            row['name'] = <Link to={`/users/${row.user_id}/${row.user_type}`} style={{color:"white"}}>{row.name}</Link>
-            //row['status'] = <Chip label={row.status} sx={{color:"white",backgroundColor:"#494949",fontFamily:"Avenir"}}  />
+            row['chat'] = <Link to={`/messages/${row.id}/${row.chat}`} style={{color:"white"}}>{row.chat}</Link>
             delete row.id;
-            delete row.user_type;
-            delete row.user_id;
         });
         return data;
     }
+
 
     return (
             <Layout
@@ -42,29 +44,17 @@ function ReferralCodes(){
                 <CustomDialog/>
 
                 <Title
-                title="Manage Referral Code"
+                title="Messages"
                 showBackIcon={false}
                 trailingButton={false}
-                onPressed={()=>{
-                    // image.set("");
-                    // expiryDate.set(getDateTime());
-                    // adUrl.set("");
-                    // sponsorName.set("");
-                    // title.set("");
-                    // rank.set("0");
-                    // status.set("active");
-                    navigate('/referral_codes/add');
-                    //adInfo.set({});
-                }}
                 />
-
                 <SizedBox
                 height={40}
                 />
 
             <CustomTable
-                label={"Search Users"}
-                rows={getRows(referralCodes.get())}
+                label={"Search Messages"}
+                rows={getRows(messages.get())}
                 onPageChanged={(page:number)=>{
                     currentPage.set(page);
                 }}
@@ -72,36 +62,28 @@ function ReferralCodes(){
                     rowsPerPage.set(page);
                 }}
                 onSearch={(value:string)=>{
-                    filterCodes(value);
+                    filterMessages(value);
                 }}
                 search={search.get()}
                 currentPage={currentPage.get()}
                 rowsPerPage={rowsPerPage.get()}
-                showActionButton={false}
-                menus={['Delete']}
+                showActionButton={true}
+                menus={['View']}
                 onMenuClicked={(menu:string,index:any)=>{
-                    // let ad = ads.get()[index];
-                    // deleteAd(ad['id']);
+                    let message = messages.get()[index];
+                    navigate(`/messages/${message['id']}/${message['user_type']}`);
                 }}
                 onSortBy={(key:string)=>{
-                    sortCodes(key);
+                    sortMessages(key);
                 }}
                 headings={[
                     {
-                        "label":"Referrer",
-                        "sortKey":"name"
+                        "label":"Chat",
+                        "sortKey":"chat"
                     },
                     {
-                        "label":"Referral Code",
-                        "sortKey":"referral_code"
-                    },
-                    {
-                        "label":"Date Created",
-                        "sortKey":"date_created"
-                    },
-                    {
-                        "label":"Usage Counts",
-                        "sortKey":"usage_counts"
+                        "label":"Last Updated",
+                        "sortKey":"last_updated"
                     }
                 ]}
                 />
@@ -112,4 +94,4 @@ function ReferralCodes(){
 }
 
 
-export default ReferralCodes;
+export default Messages;

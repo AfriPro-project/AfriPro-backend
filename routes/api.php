@@ -21,6 +21,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReferralCodesController;
+use App\Models\ReferralCodes;
 
 /*
 |--------------------------------------------------------------------------
@@ -148,6 +149,8 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('/adverts',[AdvertsController::class,'store'])->middleware('admin');
     Route::get('/adverts_admin',[AdvertsController::class,'fetchAdsAdmin'])->middleware('admin');
     Route::get('/referral_codes',[ReferralCodesController::class,'index'])->middleware('admin');
+    Route::get('/messages/admin/{room_type}',[ChatRoomsController::class,'allMessages'])->middleware('admin');
+    Route::post('/earlybird',[ReferralCodesController::class,'earlyBirdSignup'])->middleware('admin');
 
 
 

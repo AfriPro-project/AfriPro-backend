@@ -56,7 +56,6 @@ function Title ({title, showBackIcon, trailingText, trailingButton,onPressed}:Pr
                 fontFamily:"Avnir",
                 background:trailingButton === true ? "white" : "transparent",
                 fontWeight:500,
-                lineHeight:40,
                 borderRadius:20,
                 '&:hover': {
                     color: "#fff",

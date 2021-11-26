@@ -9,6 +9,7 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import {drawerState,toggleDrawer} from './drawer_state';
 import {useState as hUseState} from '@hookstate/core'
 import {logout} from '../../modules/authentication_module/states/authentication_state';
+import { Link } from 'react-router-dom';
 type Props={
     variant:any,
 }
@@ -80,7 +81,7 @@ function CustomDrawer({variant}:Props){
 
     function handleLogout(){
         if(logout()){
-            navigate('/');
+            window.open("/","_self");
         }
     }
 
@@ -132,8 +133,11 @@ function CustomDrawer({variant}:Props){
               alignItems:"center"
             }}
             >
-
-                <SettingsIcon/>
+                <Link
+                to={'/settings'}
+                style={{width:50,color:"white"}}
+                >
+                <SettingsIcon/></Link>
                 <p>{user?.user.first_name}</p>
                 <IconButton
                 onClick={handleLogout}
