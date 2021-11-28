@@ -26,7 +26,11 @@ class PushNotifcationsController extends Controller
 
         }else{
             $user = User::find($id);
-            $registrationIds = $user->fcmToken;
+            if($user){
+                $registrationIds = $user->fcmToken;
+            }else{
+                $registrationIds = null;
+            }
         }
 
 

@@ -30,26 +30,29 @@ class FileUploadController extends Controller
 
 
 
-        // $fields = $request->validate([
-        //     'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpeg,gif,jpg',
-        // ]);
+        $fields = $request->validate([
+            'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpeg,gif,jpg',
+        ]);
 
 
         if ($file = $request->file('file')) {
-            $path = $file->store('public/files');
-            $name = $file->getClientOriginalName();
+
+
+
+            $file = $this->uploadFile($file);
+
 
             Files::create([
-                'path'=> $path,
-                'name'=>$name,
+                'path'=> $file['path'],
+                'name'=>$file['name'],
             ]);
 
             return response()->json([
                 "success" => true,
                 "message" => "File successfully uploaded",
                 "file" => [
-                    'path'=> $path,
-                    'name'=>$name
+                    'path'=> $file['path'],
+                    'name'=>$file['name']
                 ]
             ]);
 
@@ -85,33 +88,33 @@ class FileUploadController extends Controller
         if ($file = $request->file('file')) {
             //remove previous file if  found
             if(strpos($request->previousFilePath,'default_avatar') == false){
-                $path = storage_path('app/'.$request->previousFilePath);
+                $path = public_path().'/'.str_replace('public','storage',$request->previousFilePath);
+
                 if(File::exists($path)){
                     File::delete($path);
                 }
             }
 
-            $path = $file->store('public/files');
-            $name = $file->getClientOriginalName();
+            $fileUpload = $this->uploadFile($file);
 
             $file = Files::where('path','=',$request->previousFilePath)->get()->first();
             if($file){
                 $file->update([
-                    'path'=> $path,
-                    'name'=>$name
+                    'path'=> $fileUpload['path'],
+                    'name'=>$fileUpload['name']
                 ]);
             }else{
                 $file = Files::create([
-                    'path'=> $path,
-                    'name'=>$name,
+                    'path'=> $fileUpload['path'],
+                    'name'=>$fileUpload['name'],
                 ]);
             }
             return response()->json([
                 "success" => true,
                 "message" => "File successfully uploaded",
                 "file" => [
-                    'path'=> $path,
-                    'name'=>$name
+                    'path'=> $fileUpload['path'],
+                    'name'=>$fileUpload['name']
                 ]
             ]);
          }
@@ -126,5 +129,22 @@ class FileUploadController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function uploadFile($file){
+            $lastFileId = Files::where('id','!=',0)->orderBy('id','desc')->first();
+            if($lastFileId == null){
+                $lastFileId = 0;
+            }else{
+                $lastFileId = $lastFileId->id;
+            }
+            $fileName = $file->getClientOriginalName();
+            $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+            $fileName = md5($lastFileId.'_'.$fileName).'.'.$ext;
+
+            $destinationPath = public_path().'/storage/files';
+            $file->move($destinationPath,$fileName);
+            $newPath = 'public/files/'.$fileName;
+            return ['name'=>$file->getClientOriginalName(), 'path'=>$newPath];
     }
 }

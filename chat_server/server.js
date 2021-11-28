@@ -1,5 +1,21 @@
-const server = require('http').createServer();
-const io = require('socket.io')(server);
+var express = require('express');
+var app = express();
+
+app.get('/', function(req, res) {
+  // to allow cross-origin requests
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+  res.send('hello');
+});
+
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+server.listen(3000, function() {
+  console.log("Listening!");
+});
 
 io.on('connection', client => {
   console.log('connected');
@@ -47,4 +63,3 @@ io.on('connection', client => {
   // })
 
 });
-server.listen(3000);

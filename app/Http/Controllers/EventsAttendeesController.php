@@ -54,7 +54,7 @@ class EventsAttendeesController extends Controller
                 $template,
                 $email_data,
                 'Invitation to '.$event->title,
-                'event@afri.pro'
+                'event@afripro.biztrustgh.com'
             );
             $mailer->send();
             return $event;

@@ -80,11 +80,11 @@ class AuthController extends Controller
             }
 
 
-            // $verificationToken = new VerificationTokensController();
-            // $verificationToken->store($request,$token);
-            // $this->sendVerificationEmail($request,$token);
-            // $request->admin = 'true';
-            // $this->sendWelcomeEmail($request);
+            $verificationToken = new VerificationTokensController();
+            $verificationToken->store($request,$token);
+            $this->sendVerificationEmail($request,$token);
+            $request->admin = 'true';
+            $this->sendWelcomeEmail($request);
 
             return response($response, 200);
         }else{
@@ -169,7 +169,7 @@ class AuthController extends Controller
                     $template,
                     $email_data,
                     'Password Reset',
-                    'noreply@afri.pro'
+                    'noreply@afripro.biztrustgh.com'
                 );
                 $verificationToken = new VerificationTokensController();
                 $verificationToken->store($user,$token);
@@ -243,7 +243,7 @@ class AuthController extends Controller
             $template,
             $email_data,
             'Password Updated',
-            'noreply@afri.pro'
+            'noreply@afripro.biztrustgh.com'
         );
 
         $mailer->send();
@@ -274,7 +274,7 @@ class AuthController extends Controller
             $template,
             $email_data,
             'Verify your email',
-            'noreply@afri.pro'
+            'noreply@afripro.biztrustgh.com'
         );
         $mailer->send();
     }
@@ -308,7 +308,7 @@ class AuthController extends Controller
             $template,
             $email_data,
             'Welcome to AfriPro',
-            'noreply@afri.pro'
+            'noreply@afripro.biztrustgh.com'
         );
         $mailer->send();
     }

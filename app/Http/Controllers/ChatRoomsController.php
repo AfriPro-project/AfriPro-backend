@@ -198,8 +198,14 @@ class ChatRoomsController extends Controller
             if(strpos($chatRoomName,$user->email) > -1){
                 $chatRoomName = str_replace($user->email, "",$chatRoomName);
                 $chatRoomName = str_replace("|", "",$chatRoomName);
-                $recipient = User::where('email','=',$chatRoomName)->first();
-                $chatRoomName = $recipient['first_name'][0].'.'.$recipient["last_name"];
+                $recipient = User::where('email','=',$chatRoomName)->get()->first();
+
+                if($recipient){
+                    $chatRoomName = $recipient['first_name'][0].'.'.$recipient["last_name"];
+                }else{
+                    $chatRoomName = $chatRoomName;
+                }
+
             }
 
             if($latestMessage->sender_id == $user->id){
