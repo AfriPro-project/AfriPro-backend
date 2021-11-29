@@ -101,9 +101,9 @@ class PlayerBioController extends Controller
 
                     //structure notification
                     $user = auth()->user();
-                    if($user->user_type == 'player'){
-                        return;
-                    }
+                    if($user->user_type != 'player'){
+
+
 
                     $request['message'] = $user->user_type == 'agent' ? "An agent" : "A club official";
                     if($user->user_type == 'club_official'){
@@ -117,14 +117,15 @@ class PlayerBioController extends Controller
                     unset($request['player_id']);
                     $notifcationsController->store($request);
                 }
+                }
             }
         }
         if($playerBio->views >= 1000 && $playerBio->views < 1000000){
-            $playerBio->views = $playerBio->views / 1000;
-            $playerBio->views .= 'K';
+            $playerBio['views'] = $playerBio->views / 1000;
+            $playerBio['views'] .= 'K';
         }else if($playerBio->views >= 1000000){
-            $playerBio->views = $playerBio->views / 1000000;
-            $playerBio->views .= 'M';
+            $playerBio['views'] = $playerBio->views / 1000000;
+            $playerBio['views'] .= 'M';
         }
         return $playerBio;
         //return response($playerBio, 200);

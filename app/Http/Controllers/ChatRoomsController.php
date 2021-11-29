@@ -402,7 +402,9 @@ class ChatRoomsController extends Controller
                 $users = explode('|',$message['chat']);
                 $user = User::where('email',$users[0])->get()->first();
                 $user2 = User::where('email',$users[1])->get()->first();
-                $message['chat'] = $user['first_name'][0].'.'.$user['last_name'].' & '.$user2['first_name'][0].'.'.$user2['last_name'];
+                if($user){
+                    $message['chat'] = $user->first_name[0].'.'.$user->last_name.' & '.$user2->first_name[0].'.'.$user2->last_name;
+                }
             }
         }
         return $messages;

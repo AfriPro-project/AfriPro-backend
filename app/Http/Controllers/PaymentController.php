@@ -57,6 +57,16 @@ class PaymentController extends Controller
                     ->get();
                      $amount = sprintf('%0.2f',$amountToPay);
                     //create a transaction
+                    $email = $user->email;
+                    $phone_number= $user->phone_number;
+                    $name = $user->first_name.' '.$user->last_name;
+                    if($user->agent != null){
+                        $agent = User::find($user->agent);
+                        $email = $agent->email;
+                        $phone_number= $agent->phone_number;
+                        $name = $agent->first_name.' '.$agent->last_name.' for '.$name;
+                    }
+
                     Transactions::create([
                         "service_id"=>$service->id,
                         'transaction_ref'=>$transaction_id,
@@ -74,14 +84,14 @@ class PaymentController extends Controller
                               "consumer_mac" => "92a3-912ba-1192a"
                            ],
                         "customer" => [
-                                 "email" => $user->email,
-                                 "phonenumber" => $user->phone_number,
-                                 "name" => $user->first_name.' '.$user->last_name
+                                 "email" => $email,
+                                 "phonenumber" => $phone_number,
+                                 "name" => $name
                               ],
                         "customizations" => [
                                     "title" => "Subscription",
                                     "description" => $service->service_name,
-                                    "logo" => "https://assets.piedpiper.com/logo.png"
+                                    "logo" => "https://afripro.biztrustgh.com/backend/public/images/logo.png"
                                  ]
                      ];
 
@@ -176,14 +186,31 @@ class PaymentController extends Controller
 
                 //structure notification
 
+
+
                 $request['route'] = '/subscription';
                 $request['status'] = 'new';
                 $request['user_id'] = $transaction->user_id;
-                $request->only(['message', 'route', 'status','user_id']);
-                $notifcationsController->store($request);
 
                 $name = $user->first_name[0].'.'.$user->last_name;
                 $message = "$user->id:$user->user_type:$name subscribed to a $plan";
+
+                if($user->agent != null){
+
+                    $agent = User::find($user->agent);
+                    $request['user_id'] = $agent->id;
+                    $request['route'] = "";
+
+                    $name = $agent->first_name[0].'.'.$agent->last_name;
+                    $name2 = $user->first_name[0].'.'.$user->last_name;
+                    $request['message']  = "Your subscription for $name has been activated, you can now make his/her account visible";
+                    $message = "$agent->id:$agent->user_type:$name subscribed a premium service for $user->id:player:$name2";
+                }
+
+                $request->only(['message', 'route', 'status','user_id']);
+                $notifcationsController->store($request);
+
+
 
                 if($user->user_type != 'admin'){
                     $this->insertActivityLog($user,$request,$message);

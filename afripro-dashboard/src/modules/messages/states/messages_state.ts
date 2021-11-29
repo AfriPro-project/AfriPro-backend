@@ -1,4 +1,5 @@
 import { createState } from "@hookstate/core";
+import preloaderState from "../../../components/preloader/preloader_state";
 import { get } from "../../../services/api";
 import { filter, sort } from "../../../utils/globalFunctions/sort_filter_function";
 
@@ -44,12 +45,19 @@ export const fetchmessages=async()=>{
 
 
 export const fetchChatRoomMessages=async(id:string)=>{
-    messagesState.chatRoomMessages.set([]);
-    messagesState.staticChatRoomMessages.set([]);
-    messagesState.userOne.set(0);
-    let response = await get(`/chatrooms/messages/${id}`);
-    let messages = response['messages'].reverse();
-    messagesState.staticChatRoomMessages.set(messages);
-    messagesState.chatRoomMessages.set(messages);
+    try{
+        preloaderState.loading.set(true);
+        messagesState.chatRoomMessages.set([]);
+        messagesState.staticChatRoomMessages.set([]);
+        messagesState.userOne.set(0);
+        let response = await get(`/chatrooms/messages/${id}`);
+        let messages = response['messages'].reverse();
+        messagesState.staticChatRoomMessages.set(messages);
+        messagesState.chatRoomMessages.set(messages);
+    }catch(e){
+
+    }finally{
+        preloaderState.loading.set(false);
+    }
 
 }

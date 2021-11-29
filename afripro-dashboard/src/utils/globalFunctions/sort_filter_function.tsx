@@ -1,5 +1,10 @@
 export const filter=(value:string,filterKey:any,staticData:any[])=>{
-    var results = staticData.filter((data)=>data[filterKey].toLocaleLowerCase().includes(value.toLocaleLowerCase()));
+    var results = staticData.filter((data)=>{
+        if(data[filterKey] != null){
+            return data[filterKey].toLocaleLowerCase().includes(value.toLocaleLowerCase());
+        }
+        return [];
+    });
     var data = JSON.parse(JSON.stringify(results));
     return data;
 }

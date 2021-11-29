@@ -45,6 +45,7 @@ function MessageInfo(){
       }
 
     const filterMessages=(value:string)=>{
+        console.log(staticChatRoomMessages.get());
         let data = filter(value,"message",staticChatRoomMessages.get());
         chatRoomMessages.set(data);
         setSearch(value);
