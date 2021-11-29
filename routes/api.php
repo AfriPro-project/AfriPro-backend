@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogsController;
 use App\Http\Controllers\AdvertsController;
 use App\Http\Controllers\AgentBioController;
 use Illuminate\Support\Facades\Route;
@@ -8,7 +9,7 @@ use App\Http\Controllers\ChatRoomsController;
 use App\Http\Controllers\EventsAttendeesController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\FileUploadController;
-use App\Http\Controllers\notificationsController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\OpportunitiesAppliedByController;
 use App\Http\Controllers\OpportunitiesController;
 use App\Http\Controllers\PlayerBioController;
@@ -21,7 +22,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationDocsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReferralCodesController;
-use App\Models\ReferralCodes;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -151,6 +152,9 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get('/referral_codes',[ReferralCodesController::class,'index'])->middleware('admin');
     Route::get('/messages/admin/{room_type}',[ChatRoomsController::class,'allMessages'])->middleware('admin');
     Route::post('/earlybird',[ReferralCodesController::class,'earlyBirdSignup'])->middleware('admin');
+    Route::get('/activity_logs',[ActivityLogsController::class,'index'])->middleware('admin');
+    Route::get('/services',[ServicesController::class,'getServicesForAdmin'])->middleware('admin');
+    Route::post('/services/update',[ServicesController::class,'update'])->middleware('admin');
 
 
 

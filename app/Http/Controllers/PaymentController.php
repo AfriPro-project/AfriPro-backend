@@ -49,7 +49,7 @@ class PaymentController extends Controller
                     $transactions = Transactions::latest('id')->first();
                     $id = $transactions ? $transactions->id : 0;
                     $transaction_id = 'tx_ref_a'.$id.'|'.md5($id);
-                    $currency = Http::get('https://ipapi.co/currency/');
+                    $currency = $request->currency;
                     $amountToPay = Currency::convert()
                     ->from('EUR')
                     ->to($currency)
@@ -66,7 +66,7 @@ class PaymentController extends Controller
                     $data = [
                         "tx_ref" => $transaction_id,
                         "amount" => $amount,
-                        "currency" => $currency->body(),
+                        "currency" => $currency,
                         "redirect_url" => env('APP_VERIFY_TRANSACTION_URL'),
                         "payment_options" => "card,mobilemoney",
                         "meta" => [
@@ -85,9 +85,7 @@ class PaymentController extends Controller
                                  ]
                      ];
 
-                    //  if($service->id == 2){
-                    //      $data['payment_plan'] = env('PAYMENT_PLAN_ID');
-                    //  }
+
 
                      $response = Http::withHeaders([
                         'Authorization' => 'Bearer '.env("API_SERVER_KEY").'',
@@ -148,7 +146,7 @@ class PaymentController extends Controller
                 $subscription = Subscriptions::where('user_id','=',$transaction->user_id)->where('service_id','=',$transaction->service_id)->get()->first();
 
                 $user = User::where('id','=',$transaction->user_id)->get()->first();
-
+                $plan = 'Basic Plan';
                 if($subscription){
                     $expiration = Carbon::createFromFormat('Y-m-d',$subscription->expiry);
                     $expirationFunc = $this->getExpiration($transaction, $user,$expiration);
@@ -161,6 +159,7 @@ class PaymentController extends Controller
                     $expiration = Carbon::now();
                     $expirationFunc = $this->getExpiration($transaction, $user,$expiration);
                     $request['message'] = $transaction->service_id == 1 && $user->user_type == 'player'?  "basic" : "premium";
+                    $plan = $transaction->service_id == 1 && $user->user_type == 'player'?  "Basic Plan" : "Premium Plan";
                     $request['message'] = "Your ".$request['message']." subscription has been activated and will expre on ".date('d M, Y',strtotime($expirationFunc));
                     $subscription = Subscriptions::create([
                         'user_id'=>$transaction->user_id,
@@ -183,6 +182,12 @@ class PaymentController extends Controller
                 $request->only(['message', 'route', 'status','user_id']);
                 $notifcationsController->store($request);
 
+                $name = $user->first_name[0].'.'.$user->last_name;
+                $message = "$user->id:$user->user_type:$name subscribed to a $plan";
+
+                if($user->user_type != 'admin'){
+                    $this->insertActivityLog($user,$request,$message);
+                }
                 return redirect('/done');
 
              }else{
@@ -193,5 +198,13 @@ class PaymentController extends Controller
             $transaction->update(['status'=>'failed']);
             return redirect('/done');
         }
+    }
+
+    public function insertActivityLog($user,$request,$message){
+        $activityLog  = new ActivityLogsController();
+        $request['activity'] = $message;
+        $request['user_id'] = $user->id;
+        $request->only(['activity','user_id']);
+        $activityLog->store($request);
     }
 }

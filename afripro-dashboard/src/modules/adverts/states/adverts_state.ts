@@ -149,16 +149,20 @@ export const addAdvert=async()=>{
          "status":status.get(),
          "ad_url":adUrl.get(),
          "rank":rank.get(),
-
      };
 
-     let msg = "Event Added successfully";
+     let msg = "Advert Added successfully";
      if(Object.keys(adsState.adInfo.get()).length > 0){
          data['id'] = adsState.adInfo.get().id!;
-         await post('/adverts_update',data)
-         msg = "Event Updated successfully";
+         await post('/adverts_update',data);
+
+         msg = "Advert Updated successfully";
      }else{
-         await post('/adverts',data);
+         let res = await post('/adverts',data);
+         if(res['status'] === 'error'){
+            showDialog("Done",res['message']);
+            return;
+         }
          await fetchAds();
          search.set("");
          currentPage.set(0);

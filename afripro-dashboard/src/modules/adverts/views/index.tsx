@@ -28,9 +28,10 @@ function Adverts(){
         data = JSON.parse(JSON.stringify(data))
         data.forEach(row => {
             row['title'] = <Link to={`/ads/${row.id}`} style={{color:"white"}}>{row.title}</Link>
-            row['status'] = <Chip label={row.status} sx={{color:"white",backgroundColor:"#494949",fontFamily:"Avenir"}}  />
+            row['status'] = <Chip label={row.status} sx={{color:"white",backgroundColor:row.status === "Active" ? "#494949" : "red",fontFamily:"Avenir"}}  />
             delete row.id;
             delete row.ad_url;
+            delete row.expiry_date;
         });
         return data;
     }

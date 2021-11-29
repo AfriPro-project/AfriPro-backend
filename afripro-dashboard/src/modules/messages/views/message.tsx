@@ -136,7 +136,7 @@ function MessageInfo(){
                                 style={{color:stringToColour(message['first_name'])}}
                                 to={`/users/${message['sender_id']}/${message['user_type']}`}>{message['first_name'][0]+'.'+message['last_name']}</Link><br/><br/>
                                 {message['image']  != null ? <img style={{width:"100%",borderRadius:10}} src={process.env.REACT_APP_BACKEND_APP_URL+''+message['image'].replace('public','storage')} alt="text"/> : null}
-                                {renderText(message['message'])}
+                                {message['message'] != null ? renderText(message['message']) : ""}
                             </Box>
                         </Box>
                     })}

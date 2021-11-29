@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>AfriPro</title>
-    <link rel="stylesheet" href="{{ URL::asset('css/emailVerification.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('public/css/emailVerification.css') }}">
 
 </head>
 <body>
     <center>
         <br/><br/>
-        <img  src="{{ URL::asset('images/logo.svg') }}"/>
+        <img width="300px"  src="{{ URL::asset('public/images/logo.png') }}"/>
     </center>
 
 
@@ -51,7 +51,7 @@
                         var btn = document.getElementById('btn');
                         btn.style.opacity = 0.5;
                         btn.innerHTML = "Please wait....";
-                        var data = await axios.post('http://127.0.0.1:8001/api/resetpassword',{
+                        var data = await axios.post('https://afripro.biztrustgh.com/backend/api/resetpassword',{
                             email:email,
                             password: password
                         });

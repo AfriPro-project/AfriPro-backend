@@ -14,7 +14,7 @@ export const authenticationState = createState({
 
 export function sessionManager(path:string){
     var userData = localStorage.getItem("userData");
-    var loggedinRoutes = ['/home','/users','/opportunities','/verification_docs','/scholars','/events','/ads','/referral_codes','/messages','/chat_forum','/settings'];
+    var loggedinRoutes = ['/home','/users','/opportunities','/verification_docs','/scholars','/events','/ads','/referral_codes','/messages','/chat_forum','/settings','/activity_log'];
     if(userData){
         if(loggedinRoutes.indexOf(path) > -1){
             return false;

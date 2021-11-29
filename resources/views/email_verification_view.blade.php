@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>AfriPro</title>
-    <link rel="stylesheet" href="{{ URL::asset('css/emailVerification.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('public/css/emailVerification.css') }}">
 
 </head>
 <body>
@@ -14,9 +14,9 @@
             <div class="image">
                 <center>
                     @if($alert =='success')
-                     <img  src="{{ URL::asset('images/sucess.svg') }}"/>
+                     <img  src="{{ URL::asset('public/images/sucess.svg') }}"/>
                     @else
-                    <img  src="{{ URL::asset('images/error.svg') }}"/>
+                    <img  src="{{ URL::asset('public/images/error.svg') }}"/>
                     @endif
                 </center>
             </div>

@@ -36,6 +36,7 @@ class PlayerBioController extends Controller
             $request['pictures'] = "public/files/default_avatar.jpg";
         }
         $playerBio = PlayerBio::create($request->all());
+
         return response($playerBio);
     }
 
@@ -85,6 +86,15 @@ class PlayerBioController extends Controller
                         'player_id'=>$request->player_id,
                         'user_id'=>$request->user_id
                     ]);
+
+
+                    //insert operation to activy logs
+
+                    $name = $user->first_name[0].'.'.$user->last_name;
+                    $name2 = $playerBio->first_name[0].'.'.$playerBio->last_name;
+                    $message = "$user->id:$user->user_type:$name viewed the profile of $playerBio->player_id:player:$name2";
+
+                    $this->insertActivityLog($user,$request,$message);
 
                     $notifcationsController = new NotificationsController();
 
@@ -251,5 +261,13 @@ class PlayerBioController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function insertActivityLog($user,$request,$message){
+        $activityLog  = new ActivityLogsController();
+        $request['activity'] = $message;
+        $request['user_id'] = $user->id;
+        $request->only(['activity','user_id']);
+        $activityLog->store($request);
     }
 }

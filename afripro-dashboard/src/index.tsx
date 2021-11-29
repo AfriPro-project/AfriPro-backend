@@ -35,6 +35,8 @@ import MessageInfo from './modules/messages/views/message';
 import ChatForum from './modules/chat_forum/views';
 import SettingsPage from './modules/authentication_module/views/settings';
 import NotFoundPage from './modules/errorPages/views/404';
+import ActvityLogs from './modules/actvityLogs/views';
+import ServicesPage from './modules/services/views';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -62,6 +64,8 @@ ReactDOM.render(
       <Route path="/messages/:id/:chat" element={<MessageInfo/>}/>
       <Route path="/chat_forum" element={<ChatForum/>}/>
       <Route path="/settings" element={<SettingsPage/>}/>
+      <Route path="/activity_log" element={<ActvityLogs/>}/>
+      <Route path="/services" element={<ServicesPage/>}/>
       <Route path='*' element={<NotFoundPage/>} />
     </Routes>
     :

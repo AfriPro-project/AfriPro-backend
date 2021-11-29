@@ -30,7 +30,7 @@ class AdvertsController extends Controller
     {
         $advert = Adverts::where('rank','=',$request->rank)->get()->first();
         if($advert){
-            return ['status'=>'error','message'=>'advert with rank already exist'];
+            return ['status'=>'error','message'=>'Advert with rank '.$advert->rank.' already exist'];
         }
         $advert = Adverts::create($request->all());
         return $advert;
@@ -85,9 +85,16 @@ class AdvertsController extends Controller
 
     public function fetchAdsAdmin()
     {
-       $ads = Adverts::select("sponsor_name","title",DB::raw('date_format(created_at, \'%d-%b-%Y\') as date_added'),"ad_url","clicks","rank","status","id")
+       $ads = Adverts::select("sponsor_name","expiry_date","title",DB::raw('date_format(created_at, \'%d-%b-%Y\') as date_added'),"ad_url","clicks","rank","status","id")
        ->orderBy('id','desc')
        ->get();
+       foreach ($ads as $ad) {
+           if($ad['expiry_date'] < date('Y-m-d')){
+               $ad['status'] = 'Expired';
+           }else{
+               $ad['status'] = 'Active';
+           }
+       }
        return $ads;
     }
 }

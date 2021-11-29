@@ -10,6 +10,7 @@ class Services extends Model
     use HasFactory;
     protected $fillable = [
         "service_name",
-        'amount'
+        'amount_for_agent',
+        'amount_for_player'
     ];
 }

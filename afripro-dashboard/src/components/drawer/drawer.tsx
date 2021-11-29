@@ -64,7 +64,11 @@ function CustomDrawer({variant}:Props){
         {
             "label":"Chat Forum",
             "path":"/chat_forum"
-        }
+        },
+        {
+            "label":"Services",
+            "path":"/services"
+        },
      ]
 
      useEffect(() => {

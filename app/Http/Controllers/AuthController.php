@@ -11,7 +11,7 @@ use App\Models\TeamBio;
 use Carbon\Carbon;
 use App\Models\Verification_tokens;
 use App\Models\Subscriptions;
-
+use App\Http\Controllers\ActivityLogsController;
 class AuthController extends Controller
 {
     public function register(Request $request){
@@ -55,8 +55,8 @@ class AuthController extends Controller
         }
 
         $request['password'] = md5($request->password);
+        $request['referral_code'] = $referralCode;
         $user = User::create($request->all());
-
         $referralCodeInstance->update($user->id,$referralCode);
 
         if($request->email != ''){
@@ -86,8 +86,21 @@ class AuthController extends Controller
             $request->admin = 'true';
             $this->sendWelcomeEmail($request);
 
+            //insert into actvitylogs
+            $c = $user->user_type ==  'agent' ? 'an' : 'a';
+
+            $name = $user->first_name[0].'.'.$user->last_name;
+            $message = "$user->id:$user->user_type:$name signup as $c $user->user_type";
+
+            $this->insertActivityLog($user,$request,$message);
             return response($response, 200);
         }else{
+
+            $agent = User::find($request->agent);
+            $name = $agent->first_name[0].'.'.$agent->last_name;
+            $name2 = $user->first_name[0].'.'.$user->last_name;
+            $message = "$agent->id:$agent->user_type:$name onbaoarded  a new player $user->id:player:$name2";
+            $this->insertActivityLog($agent,$request,$message);
             return $user;
         }
 
@@ -102,12 +115,15 @@ class AuthController extends Controller
 
         $password = md5($loginData['password']);
         $user = User::where('email',$loginData['email'])->where('password',$password);
+
         if($request->type){
             $user=$user->where('user_type','admin');
         }
         $user = $user->first();
+
         if($user){
             $token = $user->createToken('userToken')->plainTextToken;
+            $user = $this->getReferralCode($user);
             if($user->blocked == 'true'){
                 $response = [
                     'status'=>'error',
@@ -153,7 +169,7 @@ class AuthController extends Controller
 
                 // send email with the template
                 $template = 'emails.email_template';
-                $link = env('APP_URL').":".env('PORT').'/forgot_password/'.$fields['email'].'/'.$token;
+                $link = env('APP_URL')."/backend/forgot_password/".$fields['email'].'/'.$token;
                 // email data
 
                 $email_data = array(
@@ -316,12 +332,18 @@ class AuthController extends Controller
     public function updateProfile(Request $request){
         $user = User::find($request->user_id);
         $user->update($request->all());
+        $user = $this->getReferralCode($user);
         $token = $request->bearerToken();
         $response = [
             'status'=>'success',
             'user'=>$user,
             'token'=>$token
         ];
+        if($request->first_name){
+            $name = $user->first_name[0].'.'.$user->last_name;
+            $message = "$user->id:$user->user_type:$name updated his/her profile";
+            $this->insertActivityLog($user,$request,$message);
+        }
         return $response;
     }
 
@@ -335,6 +357,7 @@ class AuthController extends Controller
 
     public function anonymousLogin(Request $request){
         $user = User::find($request->user_id);
+        $user = $this->getReferralCode($user);
         $token = $user->createToken('userToken')->plainTextToken;
         $response = [
             'status'=>'success',
@@ -379,5 +402,20 @@ class AuthController extends Controller
         }
 
         return $results;
+    }
+
+    public function getReferralCode($user){
+        if($user->referral_code == null){
+            $user['referral_code'] = ReferralCodes::where('user_id',$user->id)->first()->referral_code;
+        }
+        return $user;
+    }
+
+    public function insertActivityLog($user,$request,$message){
+        $activityLog  = new ActivityLogsController();
+        $request['activity'] = $message;
+        $request['user_id'] = $user->id;
+        $request->only(['activity','user_id']);
+        $activityLog->store($request);
     }
 }

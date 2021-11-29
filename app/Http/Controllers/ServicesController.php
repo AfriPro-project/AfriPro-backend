@@ -48,9 +48,12 @@ class ServicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+
+        $service = Services::find($request->service_id);
+        $service->update($request->all());
+        return $service;
     }
 
     /**
@@ -63,4 +66,23 @@ class ServicesController extends Controller
     {
         //
     }
+
+    public function getServicesForAdmin(){
+       $basicService = Services::where('service_name','Basic')->get()->first();
+       $premiumService = Services::where('service_name','Premium')->get()->first();
+       $data = array(
+           "amount_for_player"=>array(
+               "basic"=>$basicService->amount_for_player,
+               "premium"=>$premiumService->amount_for_player
+           ),
+           "amount_for_agent"=>array(
+               "premium"=>$basicService->amount_for_agent,
+               "player_onboard"=>$premiumService->amount_for_agent
+           )
+       );
+
+       return $data;
 }
+    }
+
+
