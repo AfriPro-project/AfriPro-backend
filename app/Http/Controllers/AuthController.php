@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use App\Models\Verification_tokens;
 use App\Models\Subscriptions;
 use App\Http\Controllers\ActivityLogsController;
+use App\Models\ProfileViews;
+
 class AuthController extends Controller
 {
     public function register(Request $request){
@@ -29,7 +31,9 @@ class AuthController extends Controller
         //check if user was referred by someone
         $userFound = ReferralCodes::where('referral_code',$request->referred_by)->first();
         if(!$userFound){
-            $request->referred_by = '';
+            $request->referred_by = 0;
+        }else{
+            $userFound->id;
         }
 
 
@@ -56,18 +60,18 @@ class AuthController extends Controller
 
         $request['password'] = md5($request->password);
         $request['referral_code'] = $referralCode;
+
         $user = User::create($request->all());
         $referralCodeInstance->update($user->id,$referralCode);
 
         if($request->email != ''){
+            $user['profile_views'] = $this->getProfileViews($user->id);
             $token = $user->createToken('userToken')->plainTextToken;
             $response = [
                 'status'=>'success',
                 'user'=>$user,
                 'token'=>$token
             ];
-
-
 
             //activate early bird signup for user
             if($code != '' && $user->user_type != 'club_official'){
@@ -142,7 +146,10 @@ class AuthController extends Controller
                 }
             }
 
+
+
             $user->update(['last_active'=>Carbon::now()->toDateTimeString()]);
+            $user['profile_views'] = $this->getProfileViews($user->id);
             $response = [
                 'status'=>'success',
                 'user'=>$user,
@@ -358,6 +365,7 @@ class AuthController extends Controller
     public function anonymousLogin(Request $request){
         $user = User::find($request->user_id);
         $user = $this->getReferralCode($user);
+        $user['profile_views'] = $this->getProfileViews($user->id);
         $token = $user->createToken('userToken')->plainTextToken;
         $response = [
             'status'=>'success',
@@ -417,5 +425,10 @@ class AuthController extends Controller
         $request['user_id'] = $user->id;
         $request->only(['activity','user_id']);
         $activityLog->store($request);
+    }
+
+    public function getProfileViews($id){
+        $views = ProfileViews::where('user_id',$id)->count();
+        return $views;
     }
 }

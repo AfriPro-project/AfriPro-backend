@@ -38,7 +38,8 @@ class DashboardController extends Controller
             ->whereMonth('created_at',$i+1)
             ->get()->count();
 
-            array_push($normalUsers, $normalUsersCount - $data->count);
+            $normal = ($normalUsersCount - $data->count) < 0 ? 0 : $normalUsersCount - $data->count;
+            array_push($normalUsers, $normal);
 
             array_push($paidUsers,$data->count);
        }

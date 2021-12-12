@@ -26,7 +26,8 @@ function ReferralCodes(){
         data = JSON.parse(JSON.stringify(data))
         data.forEach(row => {
             row['name'] = <Link to={`/users/${row.user_id}/${row.user_type}`} style={{color:"white"}}>{row.name}</Link>
-            //row['status'] = <Chip label={row.status} sx={{color:"white",backgroundColor:"#494949",fontFamily:"Avenir"}}  />
+            row['usage_count'] = <Link to={`/referral_codes/usage_count/${row.id}`} style={{color:"white"}}>{row.usage_count}</Link>
+            row['referral_code'] = row.user_id === 2 ? <Link to={`/referral_codes/${row.id}`} style={{color:"white"}}>{row.referral_code}</Link> : row.referral_code
             delete row.id;
             delete row.user_type;
             delete row.user_id;
@@ -44,7 +45,8 @@ function ReferralCodes(){
                 <Title
                 title="Manage Referral Code"
                 showBackIcon={false}
-                trailingButton={false}
+                trailingButton={true}
+                trailingText={"Add New"}
                 onPressed={()=>{
                     // image.set("");
                     // expiryDate.set(getDateTime());
@@ -54,6 +56,8 @@ function ReferralCodes(){
                     // rank.set("0");
                     // status.set("active");
                     navigate('/referral_codes/add');
+                    referralCodesState.referalCodeId.set(0);
+                    referralCodesState.referralCode.set("");
                     //adInfo.set({});
                 }}
                 />

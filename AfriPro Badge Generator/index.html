@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Badge</title>
+</head>
+<style>
+    @font-face {
+        font-family: 'Avenir';
+        src: font-url('/assets/fonts/AvenirLTStd-Black.otf') format('otf'),
+            font-url('/assets/fonts/AvenirLTStd-Black.otf') format('otf'),
+            font-url('/assets/fonts/AvenirLTStd-Roman.otf') format('otf');
+    }
+
+    body{
+        background-color: #171717;
+        color:white !important;
+        font-family:Avenir;
+    }
+    .badges__box{
+        margin: auto;
+        margin-top: 20px;
+        text-align: center;
+        width: 100%;
+        max-width: 300px;
+    }
+    .badge{
+        margin-top: 40px;
+        position: relative;
+    }
+    .badge .badge__bottom__gradient{
+        position: absolute;
+        bottom:24px;
+        left:18px;
+    }
+    .badge .badge__bottom__player{
+        position: absolute;
+        bottom:90px;
+        left:28px;
+    }
+    .badge .badge__number{
+        position:absolute;
+        top:60px;
+        left: 30px;
+        color:#D3FFDA
+    }
+
+    .badge .badge__number h3{
+        font-size: 50px;
+        margin:0px !important;
+        font-weight: bolder;
+        color: inherit;
+    }
+    .badge .badge__number P{
+        color: inherit;
+        font-size: 30px;
+        margin-top: -10px;
+    }
+
+
+    .badge .badge__number .badge__player__country{
+        position: absolute;
+        bottom:0px;
+        left:15px;
+        width: 25px;
+    }
+
+    .badge .badge__name__skills{
+        position: absolute;
+        bottom: 70px;
+        width: 100%;
+    }
+    .badge .badge__name__skills h4{
+        font-size:26px;
+        margin:0px;
+        margin-bottom: 5px;
+    }
+    .badge .badge__name__skills .skills__set{
+      font-size: 20px;
+      color:#D3FFDA;
+      display: flex;
+      justify-content: space-between;
+      width:60%;
+      margin: auto;
+    }
+
+    #badge__two{
+        color: #544C24 !important;
+    }
+    #badge__two .badge__number{
+        color: #544C24 !important;
+    }
+    #badge__two .skills__set{
+        color: #544C24 !important;
+    }
+    #badge__two .badge__bottom__player{
+        bottom: 170px !important;
+        width: 80%;
+        left: 60px !important;
+    }
+
+    #badge__two .badge_two_bottom{
+        bottom:8px;
+        position: absolute;
+        width: 96%;
+        left:6px;
+    }
+
+    #badge__three .badge__bottom__player{
+        bottom: 170px !important;
+        width: 80%;
+        left: 60px !important;
+    }
+    #badge__three .badge_two_bottom{
+        bottom:8px;
+        position: absolute;
+        width: 96%;
+        left:6px;
+    }
+
+</style>
+<body>
+    <div class="badges__box">
+        <span>Select Your preferred badge</span>
+        <div id="badge__one" class="badge">
+            <img src="assets/badges/badgeOne/badge-one-bg.png" width="100%"/>
+            <img class="badge__bottom__player" src="assets/badges/badgeOne/player.png" width="83%"/>
+            <img class="badge__bottom__gradient" src="assets/badges/badgeOne/badge-bottom-gradient.png" width="87%"/>
+            <div class="badge__number">
+                <h3>85</h3>
+                <p>AM</p>
+                <img class="badge__player__country" src="assets/badges/badgeOne/country.png" />
+            </div>
+            <div class="badge__name__skills">
+                <h4>A. DIALLO</h4>
+                <div class="skills__set">
+                    <span>91 PAC</span>
+                    <span>91 DRI</span>
+                </div>
+                <div class="skills__set">
+                    <span>91 SHOT</span>
+                    <span>91 DEF</span>
+                </div>
+                <div class="skills__set">
+                    <span>91 PAS</span>
+                    <span>91 PHY</span>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="downloadImage('badge__one')">Download</button>
+
+
+        <div id="badge__two" class="badge">
+            <img src="assets/badges/badgeTwo/bg.png" width="100%"/>
+            <img class="badge__bottom__player" src="assets/badges/badgeTwo/player.png"/>
+            <img class="badge_two_bottom" src="assets/badges/badgeTwo/bottom.png"/>
+            <div class="badge__number">
+                <h3>85</h3>
+                <p>AM</p>
+                <img class="badge__player__country" src="assets/badges/badgeTwo/country.png" />
+            </div>
+            <div class="badge__name__skills">
+                <h4>A. DIALLO</h4>
+                <div class="skills__set">
+                    <span>91 PAC</span>
+                    <span>91 DRI</span>
+                </div>
+                <div class="skills__set">
+                    <span>91 SHOT</span>
+                    <span>91 DEF</span>
+                </div>
+                <div class="skills__set">
+                    <span>91 PAS</span>
+                    <span>91 PHY</span>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="downloadImage('badge__two')">Download</button>
+
+
+        <div id="badge__three" class="badge">
+            <img src="assets/badges/badgeThree/bg.png" width="100%"/>
+            <img class="badge__bottom__player" src="assets/badges/badgeOne/player.png"/>
+            <img class="badge_two_bottom" src="assets/badges/badgeThree/bottom.png"/>
+            <div class="badge__number">
+                <h3>85</h3>
+                <p>AM</p>
+                <img class="badge__player__country" src="assets/badges/badgeOne/country.png" />
+            </div>
+            <div class="badge__name__skills">
+                <h4>A. DIALLO</h4>
+                <div class="skills__set">
+                    <span>91 PAC</span>
+                    <span>91 DRI</span>
+                </div>
+                <div class="skills__set">
+                    <span>91 SHOT</span>
+                    <span>91 DEF</span>
+                </div>
+                <div class="skills__set">
+                    <span>91 PAS</span>
+                    <span>91 PHY</span>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="downloadImage('badge__three')">Download</button>
+
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" crossorigin="anonymous"></script>
+<script>
+    function downloadImage(badge) {
+        html2canvas($(`#${badge}`)[0],{
+            useCORS:true
+        }).then(canvas => {
+        var imageData = canvas.toDataURL("image/jpg");
+        var newData = imageData.replace(/^data:image\/png/, "data:application/octet-stream");
+        var link = document.createElement('a');
+        link.download = $('.badge__name__skills h4').text().replace(' ','_').replace('.','_')+'.png';
+        link.href = newData;
+        link.click();
+        });
+    }
+</script>
+</html>

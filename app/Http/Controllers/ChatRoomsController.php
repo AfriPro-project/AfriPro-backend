@@ -151,6 +151,7 @@ class ChatRoomsController extends Controller
         $message['seen'] = 'true';
         $message['status'] = 'receiving';
         $message['time'] = date('h:i A',strtotime($message['created_at']));
+        $message['email'] = auth()->user()->email;
 
 
         //send push
@@ -294,7 +295,7 @@ class ChatRoomsController extends Controller
         //get all mesages
         $messages = ChatRoomMessages::where('room_id','=',$request->room_id)
         ->leftJoin('users','chat_room_messages.sender_id','users.id')
-        ->select('chat_room_messages.message','chat_room_messages.sender_id','chat_room_messages.type','chat_room_messages.image','chat_room_messages.created_at','chat_room_messages.id',"users.first_name",'users.user_type',"users.last_name","chat_room_messages.read")
+        ->select('users.email','chat_room_messages.message','chat_room_messages.sender_id','chat_room_messages.type','chat_room_messages.image','chat_room_messages.created_at','chat_room_messages.id',"users.first_name",'users.user_type',"users.last_name","chat_room_messages.read")
         ->orderBy('chat_room_messages.created_at','desc');
 
 

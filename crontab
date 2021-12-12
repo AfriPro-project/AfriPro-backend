@@ -1,0 +1,1 @@
+* * * * * php /Users/macbook/Desktop/flutterprojects/AfriPro/AfriPro-backend/artisan  schedule:run >> /dev/null 2>&1

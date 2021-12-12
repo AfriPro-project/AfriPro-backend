@@ -37,6 +37,9 @@ import SettingsPage from './modules/authentication_module/views/settings';
 import NotFoundPage from './modules/errorPages/views/404';
 import ActvityLogs from './modules/actvityLogs/views';
 import ServicesPage from './modules/services/views';
+import AddReferralCode from './modules/referral_codes/views/add_referral_code';
+import ReferralCode from './modules/referral_codes/views/referral_code_info';
+import ReferralCodeUsage from './modules/referral_codes/views/usages';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -60,6 +63,9 @@ ReactDOM.render(
       <Route path="/ads/add" element={<AddAdvert/>}/>
       <Route path="/ads/:id" element={<AddInfo/>}/>
       <Route path="/referral_codes" element={<ReferralCodes/>}/>
+      <Route path="/referral_codes/add" element={<AddReferralCode/>}/>
+      <Route path="/referral_codes/:id" element={<ReferralCode/>}/>
+      <Route path="//referral_codes/usage_count/:id" element={<ReferralCodeUsage/>}/>
       <Route path="/messages" element={<Messages/>}/>
       <Route path="/messages/:id/:chat" element={<MessageInfo/>}/>
       <Route path="/chat_forum" element={<ChatForum/>}/>

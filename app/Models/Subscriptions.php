@@ -11,6 +11,7 @@ class Subscriptions extends Model
     protected $fillable = [
         "user_id",
         'service_id',
-        'expiry'
+        'expiry',
+        'reminded'
     ];
 }

@@ -161,7 +161,8 @@ class PaymentController extends Controller
                     $expiration = Carbon::createFromFormat('Y-m-d',$subscription->expiry);
                     $expirationFunc = $this->getExpiration($transaction, $user,$expiration);
                     $subscription->update([
-                        'expiry'=>$expirationFunc
+                        'expiry'=>$expirationFunc,
+                        'reminded'=>null
                     ]);
                     $request['message'] ='Your premium subscription has been renewed and will expire on '.date('d M, Y',strtotime($expirationFunc));
                 }else{

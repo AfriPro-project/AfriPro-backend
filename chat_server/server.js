@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 
+
 app.get('/', function(req, res) {
   // to allow cross-origin requests
   res.header("Access-Control-Allow-Origin", "*");

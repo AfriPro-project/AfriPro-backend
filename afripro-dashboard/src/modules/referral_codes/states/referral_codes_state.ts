@@ -9,9 +9,14 @@ export const referralCodesState = createState({
     staticReferralCodes:[],
     currentPage:0,
     rowsPerPage:10,
+    referralCode:"",
     search:"",
-    sortedKey:""
- })
+    sortedKey:"",
+    referalCodeId:0,
+    paidUsers:[],
+    normalUsers:[]
+})
+
 
 
  export const filterCodes=(value:string)=>{
@@ -41,7 +46,80 @@ export const fetchReferralCodes=async()=>{
     referralCodesState.staticReferralCodes.set(response);
 }
 
+export const fetchReferralCode=async(id:string)=>{
+    try{
+        preloaderState.loading.set(true);
+        let data = {
+            'id':id
+        }
+    let response = await post('/referral_codes/show',data);
+    referralCodesState.referralCode.set(response['referral_code']);
+    referralCodesState.referalCodeId.set(response['id']);
+    }catch(e){
+        console.log(e);
+        showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+    }finally{
+        preloaderState.loading.set(false);
+    }
+}
 
+
+export const fetchReferralCodeUsage=async(id:string)=>{
+    try{
+        preloaderState.loading.set(true);
+        referralCodesState.paidUsers.set([]);
+        referralCodesState.normalUsers.set([]);
+        referralCodesState.referralCode.set("");
+        let data = {
+            'id':id
+        }
+    let response = await post('/referral_codes/usageCounts',data);
+    referralCodesState.paidUsers.set(response.data.paidUsers);
+    referralCodesState.normalUsers.set(response.data.normalUsers);
+    referralCodesState.referralCode.set(response.referral_code);
+    }catch(e){
+        console.log(e);
+        showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+    }finally{
+        preloaderState.loading.set(false);
+    }
+}
+
+export const addReferralCode=async()=>{
+    try{
+        preloaderState.loading.set(true);
+        interface LooseObject {
+            [key: string]: any
+        }
+
+        let data:LooseObject ={
+            'referral_code':referralCodesState.referralCode.get()
+        };
+        let msg = "Referral Code added";
+        if(referralCodesState.referalCodeId.get() > 0){
+            data['id'] = referralCodesState.referalCodeId.get();
+            var response = await post('/referral_codes/updateCode',data);
+            msg = "Referral Code updated";
+        }else{
+            response = await post('/referral_codes/addCustom',data);
+            referralCodesState.search.set("");
+            referralCodesState.referralCode.set("");
+        }
+        if(response['status'] === 'error'){
+            showDialog("Attention",response['message']);
+            return;
+        }else{
+            showDialog("Success",msg);
+        }
+
+        await fetchReferralCodes();
+    }catch(e){
+        console.log(e);
+        showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");
+    }finally{
+        preloaderState.loading.set(false);
+    }
+}
 
 export const deleReferralCode=async(id:string)=>{
     try{
@@ -51,16 +129,8 @@ export const deleReferralCode=async(id:string)=>{
         preloaderState.loading.set(true);
         await post('/delete_referral_code',data);
         showDialog("Done","Referral Code deleted");
-        let newReferralCodes = JSON.parse(JSON.stringify(referralCodesState.referralCodes.get()))
-        let staticReferralCodes = JSON.parse(JSON.stringify(referralCodesState.staticReferralCodes.get()))
-
-        let index = newReferralCodes.findIndex((opportunity:any)=>opportunity.id === id);
-        let index2 = staticReferralCodes.findIndex((opportunity:any)=>opportunity.id === id);
-
-        newReferralCodes.splice(index,1);
-        staticReferralCodes.splice(index2,1);
-        referralCodesState.referralCodes.set(newReferralCodes);
-        referralCodesState.staticReferralCodes.set(staticReferralCodes);
+        await fetchReferralCodes();
+        window.open('/referral_codes','_self');
     }catch(e){
         console.log(e);
         showDialog("Attention","Opps, we are having a problem connecting to our services at the moment please try again later");

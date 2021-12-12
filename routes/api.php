@@ -23,7 +23,6 @@ use App\Http\Controllers\VerificationDocsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReferralCodesController;
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -149,12 +148,17 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get('/adverts/{id}',[AdvertsController::class,'show'])->middleware('admin');
     Route::post('/adverts',[AdvertsController::class,'store'])->middleware('admin');
     Route::get('/adverts_admin',[AdvertsController::class,'fetchAdsAdmin'])->middleware('admin');
-    Route::get('/referral_codes',[ReferralCodesController::class,'index'])->middleware('admin');
     Route::get('/messages/admin/{room_type}',[ChatRoomsController::class,'allMessages'])->middleware('admin');
     Route::post('/earlybird',[ReferralCodesController::class,'earlyBirdSignup'])->middleware('admin');
     Route::get('/activity_logs',[ActivityLogsController::class,'index'])->middleware('admin');
     Route::get('/services',[ServicesController::class,'getServicesForAdmin'])->middleware('admin');
     Route::post('/services/update',[ServicesController::class,'update'])->middleware('admin');
+    Route::post('/referral_codes/show',[ReferralCodesController::class,'show'])->middleware('admin');
+    Route::post('/referral_codes/addCustom',[ReferralCodesController::class,'addCustomReferralCode'])->middleware('admin');
+    Route::get('/referral_codes',[ReferralCodesController::class,'index'])->middleware('admin');
+    Route::post('/referral_codes/updateCode',[ReferralCodesController::class,'updateCode'])->middleware('admin');
+    Route::post('/referral_codes/usageCounts',[ReferralCodesController::class,'getReferralUsageCount'])->middleware('admin');
+    Route::post('/delete_referral_code',[ReferralCodesController::class,'destroy'])->middleware('admin');
 
 
 

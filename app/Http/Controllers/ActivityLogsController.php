@@ -16,7 +16,7 @@ class ActivityLogsController extends Controller
     {
         $activityLogs = ActivityLogs::where('activity_logs.id','!=',0)
         ->orderBy('activity_logs.id', 'desc')
-        ->leftJoin('users','users.id','activity_logs.user_id')
+        ->join('users','users.id','activity_logs.user_id')
         ->select('activity_logs.id','activity_logs.activity','users.first_name',DB::raw('date_format(activity_logs.created_at, \'%d-%b-%Y %h:%i\') as date_updated'))
         ->get();
         return $activityLogs;
