@@ -49,7 +49,7 @@ function Opportunities(){
                 onPressed={()=>
                     {
                         title.set("");
-                        image.set("");
+                        image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
                         description.set("");
                         opportunityInfo.set({});
                         navigate('/opportunities/add')

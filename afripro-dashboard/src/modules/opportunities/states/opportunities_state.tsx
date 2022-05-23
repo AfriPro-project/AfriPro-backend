@@ -20,7 +20,7 @@ export const opportunitiesState = createState({
     phoneNumber:"",
     title:"",
     description:"",
-    image:"",
+    image:"https://www.posterprintfactory.com/assets/file_placeholder.png",
     submissions:[],
  })
 
@@ -122,7 +122,7 @@ export const addOpportunity=async()=>{
         opportunitiesState.search.set("");
         opportunitiesState.currentPage.set(0);
         opportunitiesState.rowsPerPage.set(10);
-        opportunitiesState.image.set("");
+        opportunitiesState.image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
         title.set("");
         description.set("");
         serverFile = null;
@@ -171,7 +171,7 @@ export const fetchOpportunity=async(id:string)=>{
     opportunityInfo.set("");
     title.set("");
     description.set("");
-    image.set("");
+    image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
     submissions.set([]);
     let res = await get(`/opportunities/${id}/1`);
     opportunityInfo.set(res);

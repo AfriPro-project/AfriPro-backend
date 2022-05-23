@@ -19,7 +19,7 @@ export const adsState=createState({
     adUrl:"",
     expiryDate:getDateTime(),
     rank:"0",
-    image:"",
+    image:"https://www.posterprintfactory.com/assets/file_placeholder.png",
     status:"active"
 });
 
@@ -167,7 +167,7 @@ export const addAdvert=async()=>{
          search.set("");
          currentPage.set(0);
          rowsPerPage.set(10);
-         image.set("");
+         image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
          expiryDate.set(getDateTime());
          adUrl.set("");
          sponsorName.set("");
@@ -192,7 +192,7 @@ export const addAdvert=async()=>{
      preloaderState.loading.set(true);
      const {title,sponsorName,adInfo,adUrl,expiryDate,rank,image,status} = adsState;
      adInfo.set("");
-     image.set("");
+     image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
      expiryDate.set(getDateTime());
         adUrl.set("");
         sponsorName.set("");

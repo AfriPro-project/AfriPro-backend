@@ -36,7 +36,7 @@ function PlayerInfo({playerInfo}:Props){
                     backgroundPosition:"center",
                     backgroundRepeat:"no-repeat",
                     marginTop:5,
-                    backgroundImage:`url(${process.env.REACT_APP_BACKEND_APP_URL}${playerInfo.pictures.replace('public','storage')})`,
+                    backgroundImage:playerInfo.pictures  ? `url(${process.env.REACT_APP_BACKEND_APP_URL}${playerInfo.pictures.replace('public','storage')})` : '',
                     borderRadius:5}}
                 >
                     <Box

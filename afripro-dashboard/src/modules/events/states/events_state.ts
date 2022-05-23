@@ -15,7 +15,7 @@ export const eventsState=createState({
     search:"",
     sortedKey:"",
     attendees:[],
-    image:"",
+    image:"https://www.posterprintfactory.com/assets/file_placeholder.png",
     title:"",
     venu:"Online",
     description:"",
@@ -145,7 +145,7 @@ export const addEvent=async()=>{
          search.set("");
          currentPage.set(0);
          rowsPerPage.set(10);
-         image.set("");
+         image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
          start_date_time.set(getDateTime());
          end_date_time.set(getDateTime());
          location.set("");
@@ -211,7 +211,7 @@ export const addEvent=async()=>{
      preloaderState.loading.set(true);
      const {title,description,venu,eventInfo,attendees, location, start_date_time, end_date_time,image} = eventsState;
      eventInfo.set("");
-     image.set("");
+     image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
      start_date_time.set(getDateTime());
      end_date_time.set(getDateTime());
      location.set("");

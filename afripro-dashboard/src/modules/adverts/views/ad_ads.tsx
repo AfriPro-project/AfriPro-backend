@@ -57,21 +57,9 @@ function AddAdvert(){
                     marginTop:5,
                     cursor:"pointer",
                     backgroundImage:`url(${image.get()})`,
-                    borderRadius:5}}
+                    borderRadius:5
+                }}
                 >
-                    <Box
-                    sx={{
-                        width:{xs:300,sm:300},
-                        height:{xs:300,sm:300},
-                        background:"linear-gradient(to bottom,rgba(0,0,0,0.2),rgba(0,0,0,1));",
-                        borderRadius:5,
-                        display:"flex",
-                        flexDirection:"column-reverse",
-                        p:2,
-                        boxSizing:"border-box"
-                    }}
-                    >
-                    </Box>
 
                 </Box></label>
 

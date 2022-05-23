@@ -49,7 +49,7 @@ function Adverts(){
                 trailingButton={true}
                 trailingText="Add New"
                 onPressed={()=>{
-                    image.set("");
+                    image.set("https://www.posterprintfactory.com/assets/file_placeholder.png");
                     expiryDate.set(getDateTime());
                     adUrl.set("");
                     sponsorName.set("");

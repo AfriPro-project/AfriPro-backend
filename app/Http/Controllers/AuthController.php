@@ -176,7 +176,7 @@ class AuthController extends Controller
 
                 // send email with the template
                 $template = 'emails.email_template';
-                $link = env('APP_URL')."/backend/forgot_password/".$fields['email'].'/'.$token;
+                $link = env('APP_URL')."/forgot_password/".$fields['email'].'/'.$token;
                 // email data
 
                 $email_data = array(

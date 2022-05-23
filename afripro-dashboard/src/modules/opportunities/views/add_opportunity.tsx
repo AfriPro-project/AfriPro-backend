@@ -58,7 +58,7 @@ function AddOpportunity(){
                     backgroundImage:`url(${image.get()})`,
                     borderRadius:5}}
                 >
-                    <Box
+                    {/* <Box
                     sx={{
                         width:{xs:300,sm:300},
                         height:{xs:300,sm:300},
@@ -70,7 +70,7 @@ function AddOpportunity(){
                         boxSizing:"border-box"
                     }}
                     >
-                    </Box>
+                    </Box> */}
 
                 </Box></label>
 

@@ -24,9 +24,10 @@ export async function post(path:string,data:any){
     const config = {
         headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8;application/json',
         },
     };
+
 
     var response = await axios.post(url,data,config);
     return response.data;
