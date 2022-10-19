@@ -75,6 +75,8 @@ class PlayerBioController extends Controller
 
         $playerBio['agentDetails'] = User::find($playerBio->agent);
 
+        $playerBio['agentEmail'] = User::find($playerBio->email);
+
 
         $user = auth()->user();
         if($user->user_type != 'admin'){

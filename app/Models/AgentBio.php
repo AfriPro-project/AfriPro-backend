@@ -10,6 +10,7 @@ class AgentBio extends Model
     use HasFactory;
     protected $fillable = [
         "agent_id",
+        "agent_email",
         'country_located',
         "country_license",
         "certified_by_fifa",

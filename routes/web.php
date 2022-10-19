@@ -46,3 +46,4 @@ Route::get('/verify_transaction',[PaymentController::class, 'verifyTransaction']
 //     $mailer->send();
 //     return view('emails.welcome_email',$email_data);
 // });
+
