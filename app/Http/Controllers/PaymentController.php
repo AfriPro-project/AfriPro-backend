@@ -49,7 +49,9 @@ class PaymentController extends Controller
                     $transactions = Transactions::latest('id')->first();
                     $id = $transactions ? $transactions->id : 0;
                     $transaction_id = 'tx_ref_a'.$id.'|'.md5($id);
-                    $currency = $request->currency;
+
+                    $json = json_decode(file_get_contents('http://www.geoplugin.net/json.gp?ip='. $this->getIp()), true);
+                    $currency = $json['geoplugin_currencyCode'];
                     $amountToPay = Currency::convert()
                     ->from('EUR')
                     ->to($currency)
@@ -91,7 +93,7 @@ class PaymentController extends Controller
                         "customizations" => [
                                     "title" => "Subscription",
                                     "description" => $service->service_name,
-                                    "logo" => "https://afripro.biztrustgh.com/backend/public/images/logo.png"
+                                    "logo" => "https://api.afri.pro/backend/public/images/logo.png"
                                  ]
                      ];
 
@@ -138,7 +140,7 @@ class PaymentController extends Controller
         }else{
             $query = $request;
         }
-        if($query['transaction_id'] == null){
+        if($request->has('transaction_id') == false || $query['transaction_id']==null){
             return redirect('/done');
         }
 
@@ -235,4 +237,18 @@ class PaymentController extends Controller
         $request->only(['activity','user_id']);
         $activityLog->store($request);
     }
+
+    public function getIp(){
+    foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key){
+        if (array_key_exists($key, $_SERVER) === true){
+            foreach (explode(',', $_SERVER[$key]) as $ip){
+                $ip = trim($ip); // just to be safe
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false){
+                    return $ip;
+                }
+            }
+        }
+    }
+    return request()->ip(); // it will return server ip when no client ip found
+}
 }
